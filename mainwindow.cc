@@ -1,81 +1,84 @@
 #include "mainwindow.h"
 #include <iostream>
 
-MainWindow::MainWindow()
-: m_VBox(Gtk::ORIENTATION_VERTICAL),
-  m_Button_Run(" Run "),
-  m_Button_Quit("_Quit", true),
-  m_Button_Buffer1("Use buffer 1"),
-  m_Button_Buffer2("Use buffer 2")
+MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
+                            m_hBox(Gtk::ORIENTATION_HORIZONTAL),
+                            m_buttonRun(" Run "),
+                            m_buttonQuit("_Quit", true),
+                            m_buttonBuffer1("Use buffer 1"),
+                            m_buttonBuffer2("Use buffer 2")
 {
     set_title("Editor");
     set_border_width(5);
     set_default_size(400, 200);
 
-    add(m_VBox);
+    add(m_vBox);
 
     //Adding command line entry
     AddCommandLine();
 
-    m_VBox.set_border_width(5);
-    m_VBox.set_spacing(5);
+    m_vBox.set_border_width(5);
+    m_vBox.set_spacing(5);
 
     //Add the TreeView, inside a ScrolledWindow, with the button underneath:
-    m_ScrolledWindow.add(m_TextView);
+    m_scrolledWindow.add(m_textView);
 
     //Only show the scrollbars when they are necessary:
-    m_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    m_scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-    m_VBox.pack_start(m_ScrolledWindow);
+    m_vBox.pack_start(m_scrolledWindow);
 
     //Add buttons:
-    m_VBox.pack_start(m_ButtonBox, Gtk::PACK_SHRINK);
+    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
 
-    m_ButtonBox.pack_start(m_Button_Buffer1, Gtk::PACK_SHRINK);
-    m_ButtonBox.pack_start(m_Button_Buffer2, Gtk::PACK_SHRINK);
-    m_ButtonBox.pack_start(m_Button_Quit, Gtk::PACK_SHRINK);
-    m_ButtonBox.set_border_width(5);
-    m_ButtonBox.set_spacing(5);
-    m_ButtonBox.set_layout(Gtk::BUTTONBOX_END);
+    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
+    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
+    m_buttonBox.pack_start(m_buttonQuit, Gtk::PACK_SHRINK);
+    m_buttonBox.set_border_width(5);
+    m_buttonBox.set_spacing(5);
+    m_buttonBox.set_layout(Gtk::BUTTONBOX_END);
 
     //Connect signals:
-    m_Button_Quit.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::on_button_quit) );
-    m_Button_Buffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::on_button_buffer1) );
-    m_Button_Buffer2.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::on_button_buffer2) );
+    m_buttonQuit.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonQuit) );
+    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer1) );
+    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer2) );
 
-    fill_buffers();
-    on_button_buffer1();
+    FillBuffers();
+    OnButtonBuffer1();
 
     show_all_children();
 }
 
-void MainWindow::fill_buffers()
+void MainWindow::FillBuffers()
 {
     m_refTextBuffer1 = Gtk::TextBuffer::create();
-    m_refTextBuffer1->set_text("This is the text from TextBuffer #1.");
+    m_refTextBuffer1->set_text("");
 
     m_refTextBuffer2 = Gtk::TextBuffer::create();
-    m_refTextBuffer2->set_text("This is some alternative text, from TextBuffer #2.");
+    m_refTextBuffer2->set_text("");
 }
 
 void MainWindow::AddCommandLine()
 {
-    m_VBox.pack_start(m_Entry, Gtk::PACK_SHRINK);
+    m_vBox.add(m_hBox);
+    m_hBox.pack_start(m_entry, Gtk::PACK_EXPAND_WIDGET);
 
-    //m_VBox.pack_start(m_Label, Gtk::PACK_EXPAND_WIDGET);
+    //m_vBox.pack_start(m_label, Gtk::PACK_EXPAND_WIDGET);
 
-    m_Button_Run.signal_clicked().connect( sigc::mem_fun(*this,
-                &MainWindow::on_button_close) );
-    m_VBox.pack_start(m_Button_Run, Gtk::PACK_SHRINK);
-    m_Button_Run.set_can_default();
-    m_Button_Run.grab_default();
+    m_buttonRun.signal_clicked().connect( sigc::mem_fun(*this,
+                &MainWindow::OnButtonClose) );
+    m_hBox.pack_start(m_buttonRun, Gtk::PACK_SHRINK);
+    m_buttonRun.set_can_default();
+    m_buttonRun.grab_default();
+
+    m_hBox.set_spacing(8);
 
     //Add an EntryCompletion:
     Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
-    m_Entry.set_completion(completion);
+    m_entry.set_completion(completion);
 
     //Create and fill the completion's filter model
     Glib::RefPtr<Gtk::ListStore> refCompletionModel = Gtk::ListStore::create(m_Columns);
@@ -89,19 +92,39 @@ void MainWindow::AddCommandLine()
     //Fill the TreeView's model
     Gtk::TreeModel::Row row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 1;
-    row[m_Columns.m_col_name] = "Alan Zebedee";
+    row[m_Columns.m_col_name] = "Find ";
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 2;
-    row[m_Columns.m_col_name] = "Adrian Boo";
+    row[m_Columns.m_col_name] = "Replace ";
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 3;
-    row[m_Columns.m_col_name] = "Bob McRoberts";
+    row[m_Columns.m_col_name] = "Save";
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 4;
-    row[m_Columns.m_col_name] = "Bob McBob";
+    row[m_Columns.m_col_name] = "New";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 5;
+    row[m_Columns.m_col_name] = "New .c";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 6;
+    row[m_Columns.m_col_name] = "New .h";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 7;
+    row[m_Columns.m_col_name] = "New .cpp";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 8;
+    row[m_Columns.m_col_name] = "Save As ";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 4;
+    row[m_Columns.m_col_name] = "Open ";
 
     //Tell the completion what model column to use to
     //- look for a match (when we use the default matching, instead of
@@ -127,30 +150,30 @@ void MainWindow::AddCommandLine()
     */
 
     completion->signal_action_activated().connect( sigc::mem_fun(*this,
-             &MainWindow::on_completion_action_activated) );
+             &MainWindow::OnCompletion) );
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::on_button_quit()
+void MainWindow::OnButtonQuit()
 {
   hide();
 }
 
-void MainWindow::on_button_buffer1()
+void MainWindow::OnButtonBuffer1()
 {
-    m_TextView.set_buffer(m_refTextBuffer1);
+    m_textView.set_buffer(m_refTextBuffer1);
 }
 
-void MainWindow::on_button_buffer2()
+void MainWindow::OnButtonBuffer2()
 {
-    m_TextView.set_buffer(m_refTextBuffer2);
+    m_textView.set_buffer(m_refTextBuffer2);
 }
 
 
-void MainWindow::on_button_close()
+void MainWindow::OnButtonClose()
 {
   hide();
 }
@@ -182,12 +205,12 @@ bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
 }
 */
 
-void MainWindow::on_completion_action_activated(int index)
+void MainWindow::OnCompletion(int index)
 {
-  type_actions_map::iterator iter = m_CompletionActions.find(index);
-  if(iter != m_CompletionActions.end()) //If it's in the map
-  {
-    Glib::ustring title = iter->second;
-    std::cout << "Action selected: " << title << std::endl;
-  }
+    type_actions_map::iterator iter = m_CompletionActions.find(index);
+    if(iter != m_CompletionActions.end()) //If it's in the map
+    {
+        Glib::ustring title = iter->second;
+        std::cout << "Action selected: " << title << std::endl;
+    }
 }

@@ -11,18 +11,18 @@ public:
 
 protected:
 
-  void fill_buffers();
+  void FillBuffers();
   void AddCommandLine();
 
   //Signal handlers:
-  void on_button_quit();
-  void on_button_buffer1();
-  void on_button_buffer2();
+  void OnButtonQuit();
+  void OnButtonBuffer1();
+  void OnButtonBuffer2();
 
-  void on_button_close();
+  void OnButtonClose();
   //See the comment in the implementation:
  //bool on_completion_match(const Glib::ustring& key, const Gtk::TreeModel::const_iterator& iter)
-  void on_completion_action_activated(int index);
+  void OnCompletion(int index);
 
 
   //Tree model columns, for the EntryCompletion's filter model:
@@ -44,22 +44,22 @@ protected:
 
 
   //Child widgets:
-  Gtk::Box m_HBox;
-  Gtk::Box m_VBox;
+  Gtk::Box m_vBox;
+  Gtk::Box m_hBox;
 
   //Toolbar
-  Gtk::Entry m_Entry;
-  Gtk::Label m_Label;
-  Gtk::Button m_Button_Run;
+  Gtk::Entry m_entry;
+  Gtk::Label m_label;
+  Gtk::Button m_buttonRun;
 
   //TextView
-  Gtk::ScrolledWindow m_ScrolledWindow;
-  Gtk::TextView m_TextView;
+  Gtk::ScrolledWindow m_scrolledWindow;
+  Gtk::TextView m_textView;
 
   Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
 
-  Gtk::ButtonBox m_ButtonBox;
-  Gtk::Button m_Button_Quit, m_Button_Buffer1, m_Button_Buffer2;
+  Gtk::ButtonBox m_buttonBox;
+  Gtk::Button m_buttonQuit, m_buttonBuffer1, m_buttonBuffer2;
 };
 
 #endif //GTKMM_EXAMPLEWINDOW_H
