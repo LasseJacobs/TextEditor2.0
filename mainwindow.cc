@@ -8,7 +8,7 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_buttonBuffer2("Use buffer 2")
 {
     set_title("Editor");
-    set_border_width(5);
+    set_border_width(3);
     set_default_size(400, 200);
 
     add(m_vBox);
@@ -38,6 +38,7 @@ void MainWindow::AddCommandLine()
     m_buttonRun.grab_default();
 
     m_hBox.set_spacing(8);
+    m_hBox.set_margin_bottom(5);
 
     AddCompletionSet();
 }
