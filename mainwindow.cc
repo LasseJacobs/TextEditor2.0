@@ -20,45 +20,12 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
     m_vBox.set_border_width(5);
     m_vBox.set_spacing(5);
 
-    //Add the TreeView, inside a ScrolledWindow, with the button underneath:
-    m_scrolledWindow.add(m_textView);
-
-    //Only show the scrollbars when they are necessary:
-    m_scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
-    m_vBox.pack_start(m_scrolledWindow);
-
-    //Add buttons:
-    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
-
-    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonQuit, Gtk::PACK_SHRINK);
-    m_buttonBox.set_border_width(5);
-    m_buttonBox.set_spacing(5);
-    m_buttonBox.set_layout(Gtk::BUTTONBOX_END);
-
-    //Connect signals:
-    m_buttonQuit.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonQuit) );
-    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer1) );
-    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer2) );
+    AddTextView();
 
     FillBuffers();
     OnButtonBuffer1();
 
     show_all_children();
-}
-
-void MainWindow::FillBuffers()
-{
-    m_refTextBuffer1 = Gtk::TextBuffer::create();
-    m_refTextBuffer1->set_text("");
-
-    m_refTextBuffer2 = Gtk::TextBuffer::create();
-    m_refTextBuffer2->set_text("");
 }
 
 void MainWindow::AddCommandLine()
@@ -89,6 +56,103 @@ void MainWindow::AddCommandLine()
     //completion->set_match_func( sigc::mem_fun(*this,
     //&ExampleWindow::on_completion_match) );
 
+
+    completion->signal_action_activated().connect( sigc::mem_fun(*this,
+             &MainWindow::OnCompletion) );
+}
+
+void MainWindow::AddTextView()
+{
+    //Add the TreeView, inside a ScrolledWindow, with the button underneath:
+    m_scrolledWindow.add(m_textView);
+
+    //Only show the scrollbars when they are necessary:
+    m_scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+
+    m_vBox.pack_start(m_scrolledWindow);
+
+    //Add buttons:
+    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
+
+    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
+    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
+    m_buttonBox.pack_start(m_buttonQuit, Gtk::PACK_SHRINK);
+    m_buttonBox.set_border_width(5);
+    m_buttonBox.set_spacing(5);
+    m_buttonBox.set_layout(Gtk::BUTTONBOX_END);
+
+    //Connect signals:
+    m_buttonQuit.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonQuit) );
+    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer1) );
+    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer2) );
+}
+
+void MainWindow::FillBuffers()
+{
+    m_refTextBuffer1 = Gtk::TextBuffer::create();
+    m_refTextBuffer1->set_text("");
+
+    m_refTextBuffer2 = Gtk::TextBuffer::create();
+    m_refTextBuffer2->set_text("");
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::OnButtonQuit()
+{
+    hide();
+}
+
+void MainWindow::OnButtonBuffer1()
+{
+    m_textView.set_buffer(m_refTextBuffer1);
+}
+
+void MainWindow::OnButtonBuffer2()
+{
+    m_textView.set_buffer(m_refTextBuffer2);
+}
+
+
+void MainWindow::OnButtonRun()
+{
+    
+}
+
+/* You can do more complex matching with a handler like this.
+ * For instance, you could check for substrings inside the string instead of the start,
+ * or you could look for the key in extra model columns as well as the model column that will be displayed.
+ * The code here is not actually more complex - it's a reimplementation of the default behaviour.
+ *
+bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
+        Gtk::TreeModel::const_iterator& iter)
+{
+  if(iter)
+  {
+    Gtk::TreeModel::Row row = *iter;
+
+    Glib::ustring::size_type key_length = key.size();
+    Glib::ustring filter_string = row[m_Columns.m_col_name];
+
+    Glib::ustring filter_string_start = filter_string.substr(0, key_length);
+    //The key is lower-case, even if the user input is not.
+    filter_string_start = filter_string_start.lowercase();
+
+    if(key == filter_string_start)
+      return true; //A match was found.
+  }
+
+  return false; //No match.
+}
+*/
+
+void MainWindow::AddCompletionSet()
+{
     //Fill the TreeView's model
     Gtk::TreeModel::Row row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 1;
@@ -148,62 +212,7 @@ void MainWindow::AddCommandLine()
         completion->insert_action_text(title, position);
     }
     */
-
-    completion->signal_action_activated().connect( sigc::mem_fun(*this,
-             &MainWindow::OnCompletion) );
 }
-
-MainWindow::~MainWindow()
-{
-}
-
-void MainWindow::OnButtonQuit()
-{
-  hide();
-}
-
-void MainWindow::OnButtonBuffer1()
-{
-    m_textView.set_buffer(m_refTextBuffer1);
-}
-
-void MainWindow::OnButtonBuffer2()
-{
-    m_textView.set_buffer(m_refTextBuffer2);
-}
-
-
-void MainWindow::OnButtonClose()
-{
-  hide();
-}
-
-/* You can do more complex matching with a handler like this.
- * For instance, you could check for substrings inside the string instead of the start,
- * or you could look for the key in extra model columns as well as the model column that will be displayed.
- * The code here is not actually more complex - it's a reimplementation of the default behaviour.
- *
-bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
-        Gtk::TreeModel::const_iterator& iter)
-{
-  if(iter)
-  {
-    Gtk::TreeModel::Row row = *iter;
-
-    Glib::ustring::size_type key_length = key.size();
-    Glib::ustring filter_string = row[m_Columns.m_col_name];
-
-    Glib::ustring filter_string_start = filter_string.substr(0, key_length);
-    //The key is lower-case, even if the user input is not.
-    filter_string_start = filter_string_start.lowercase();
-
-    if(key == filter_string_start)
-      return true; //A match was found.
-  }
-
-  return false; //No match.
-}
-*/
 
 void MainWindow::OnCompletion(int index)
 {
