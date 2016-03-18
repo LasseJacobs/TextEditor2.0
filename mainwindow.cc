@@ -33,32 +33,15 @@ void MainWindow::AddCommandLine()
     m_vBox.add(m_hBox);
     m_hBox.pack_start(m_entry, Gtk::PACK_EXPAND_WIDGET);
 
-    //m_vBox.pack_start(m_label, Gtk::PACK_EXPAND_WIDGET);
-
     m_buttonRun.signal_clicked().connect( sigc::mem_fun(*this,
-                &MainWindow::OnButtonClose) );
+                &MainWindow::OnButtonRun) );
     m_hBox.pack_start(m_buttonRun, Gtk::PACK_SHRINK);
     m_buttonRun.set_can_default();
     m_buttonRun.grab_default();
 
     m_hBox.set_spacing(8);
 
-    //Add an EntryCompletion:
-    Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
-    m_entry.set_completion(completion);
-
-    //Create and fill the completion's filter model
-    Glib::RefPtr<Gtk::ListStore> refCompletionModel = Gtk::ListStore::create(m_Columns);
-    completion->set_model(refCompletionModel);
-
-    // For more complex comparisons, use a filter match callback, like this.
-    // See the comment below for more details:
-    //completion->set_match_func( sigc::mem_fun(*this,
-    //&ExampleWindow::on_completion_match) );
-
-
-    completion->signal_action_activated().connect( sigc::mem_fun(*this,
-             &MainWindow::OnCompletion) );
+    AddCompletionSet();
 }
 
 void MainWindow::AddTextView()
@@ -121,7 +104,7 @@ void MainWindow::OnButtonBuffer2()
 
 void MainWindow::OnButtonRun()
 {
-    
+
 }
 
 /* You can do more complex matching with a handler like this.
@@ -153,6 +136,19 @@ bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
 
 void MainWindow::AddCompletionSet()
 {
+    //Add an EntryCompletion:
+    Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
+    m_entry.set_completion(completion);
+
+    //Create and fill the completion's filter model
+    Glib::RefPtr<Gtk::ListStore> refCompletionModel = Gtk::ListStore::create(m_Columns);
+    completion->set_model(refCompletionModel);
+
+    // For more complex comparisons, use a filter match callback, like this.
+    // See the comment below for more details:
+    //completion->set_match_func( sigc::mem_fun(*this,
+    //&ExampleWindow::on_completion_match) );
+
     //Fill the TreeView's model
     Gtk::TreeModel::Row row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 1;
@@ -212,6 +208,8 @@ void MainWindow::AddCompletionSet()
         completion->insert_action_text(title, position);
     }
     */
+    completion->signal_action_activated().connect( sigc::mem_fun(*this,
+             &MainWindow::OnCompletion) );
 }
 
 void MainWindow::OnCompletion(int index)

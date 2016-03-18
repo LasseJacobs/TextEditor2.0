@@ -49,7 +49,6 @@ protected:
 
     //Toolbar
     Gtk::Entry m_entry;
-    Gtk::Label m_label;
     Gtk::Button m_buttonRun;
 
     //TextView
