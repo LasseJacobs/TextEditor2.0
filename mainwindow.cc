@@ -4,7 +4,6 @@
 MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
-                            m_buttonQuit("_Quit", true),
                             m_buttonBuffer1("Use buffer 1"),
                             m_buttonBuffer2("Use buffer 2")
 {
@@ -14,12 +13,8 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
 
     add(m_vBox);
 
-    //Adding command line entry
     AddCommandLine();
-
-    m_vBox.set_border_width(5);
-    m_vBox.set_spacing(5);
-
+    AddTabs();
     AddTextView();
 
     FillBuffers();
@@ -33,8 +28,11 @@ void MainWindow::AddCommandLine()
     m_vBox.add(m_hBox);
     m_hBox.pack_start(m_entry, Gtk::PACK_EXPAND_WIDGET);
 
+    //Connect signals
     m_buttonRun.signal_clicked().connect( sigc::mem_fun(*this,
                 &MainWindow::OnButtonRun) );
+
+    //Confiquiring run button
     m_hBox.pack_start(m_buttonRun, Gtk::PACK_SHRINK);
     m_buttonRun.set_can_default();
     m_buttonRun.grab_default();
@@ -42,6 +40,23 @@ void MainWindow::AddCommandLine()
     m_hBox.set_spacing(8);
 
     AddCompletionSet();
+}
+
+void MainWindow::AddTabs()
+{
+    //Add buttons:
+    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
+
+    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
+    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
+    //m_buttonBox.set_border_width(5);
+    m_buttonBox.set_layout(Gtk::BUTTONBOX_START);
+
+    //Connect signals:
+    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer1) );
+    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::OnButtonBuffer2) );
 }
 
 void MainWindow::AddTextView()
@@ -54,23 +69,6 @@ void MainWindow::AddTextView()
 
     m_vBox.pack_start(m_scrolledWindow);
 
-    //Add buttons:
-    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
-
-    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonQuit, Gtk::PACK_SHRINK);
-    m_buttonBox.set_border_width(5);
-    m_buttonBox.set_spacing(5);
-    m_buttonBox.set_layout(Gtk::BUTTONBOX_END);
-
-    //Connect signals:
-    m_buttonQuit.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonQuit) );
-    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer1) );
-    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer2) );
 }
 
 void MainWindow::FillBuffers()
@@ -84,11 +82,6 @@ void MainWindow::FillBuffers()
 
 MainWindow::~MainWindow()
 {
-}
-
-void MainWindow::OnButtonQuit()
-{
-    hide();
 }
 
 void MainWindow::OnButtonBuffer1()

@@ -12,11 +12,11 @@ public:
 protected:
     void FillBuffers();
     void AddCommandLine();
+    void AddTabs();
     void AddTextView();
     void AddCompletionSet();
 
     //Signal handlers:
-    void OnButtonQuit();
     void OnButtonBuffer1();
     void OnButtonBuffer2();
     void OnButtonRun();
