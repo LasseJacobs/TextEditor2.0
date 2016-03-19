@@ -10,11 +10,15 @@ public:
     virtual ~MainWindow();
 
 protected:
+    //Functions
     void FillBuffers();
+    void Log(const char* message);
+    //GUI
     void AddCommandLine();
     void AddTabs();
     void AddTextView();
     void AddCompletionSet();
+    void AddStatusBar();
 
     //Signal handlers:
     void OnButtonBuffer1();
@@ -46,6 +50,7 @@ protected:
     //Child widgets:
     Gtk::Box m_vBox;
     Gtk::Box m_hBox;
+    Gtk::Box m_statusBox;
 
     //Toolbar
     Gtk::Entry m_entry;
@@ -59,6 +64,9 @@ protected:
 
     Gtk::ButtonBox m_buttonBox;
     Gtk::Button m_buttonBuffer1, m_buttonBuffer2;
+
+    //Status
+    Gtk::Label m_outputLog;
 };
 
 #endif //GTKMM_WINDOW_H

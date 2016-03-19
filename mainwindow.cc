@@ -1,8 +1,11 @@
 #include "mainwindow.h"
 #include <iostream>
 
+#define MAX_BUFFER_SIZE 40
+
 MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
+                            m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
                             m_buttonBuffer1("Use buffer 1"),
                             m_buttonBuffer2("Use buffer 2")
@@ -16,6 +19,7 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
     AddCommandLine();
     AddTabs();
     AddTextView();
+    AddStatusBar();
 
     FillBuffers();
     OnButtonBuffer1();
@@ -72,6 +76,13 @@ void MainWindow::AddTextView()
 
     m_vBox.pack_start(m_scrolledWindow);
 
+}
+
+void MainWindow::AddStatusBar()
+{
+    m_vBox.add(m_statusBox);
+    //This is the output log
+    m_statusBox.pack_start(m_outputLog, Gtk::PACK_SHRINK);
 }
 
 void MainWindow::FillBuffers()
@@ -211,4 +222,19 @@ void MainWindow::AddCompletionSet()
 void MainWindow::OnCommand()
 {
     std::cout << m_entry.get_text() << std::endl;
+}
+
+void MainWindow::Log(const char* message)
+{
+    char statusBuffer[MAX_BUFFER_SIZE];
+    if(strlen(message) > MAX_BUFFER_SIZE-1)
+    {
+        strncpy(statusBuffer, message, MAX_BUFFER_SIZE-3);
+        strcat(statusBuffer, "...");
+    }
+    else
+    {
+        strncpy(statusBuffer, message, MAX_BUFFER_SIZE);
+    }
+    m_outputLog.set_text(statusBuffer);
 }
