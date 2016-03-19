@@ -9,7 +9,7 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
 {
     set_title("Editor");
     set_border_width(3);
-    set_default_size(400, 200);
+    set_default_size(1024, 576);
 
     add(m_vBox);
 
@@ -29,6 +29,8 @@ void MainWindow::AddCommandLine()
     m_hBox.pack_start(m_entry, Gtk::PACK_EXPAND_WIDGET);
 
     //Connect signals
+    m_entry.signal_activate().connect(sigc::mem_fun(*this,
+                &MainWindow::OnCommand) );
     m_buttonRun.signal_clicked().connect( sigc::mem_fun(*this,
                 &MainWindow::OnButtonRun) );
 
@@ -201,17 +203,12 @@ void MainWindow::AddCompletionSet()
         auto title = the_pair.second;
         completion->insert_action_text(title, position);
     }
-    */
     completion->signal_action_activated().connect( sigc::mem_fun(*this,
              &MainWindow::OnCompletion) );
+    */
 }
 
-void MainWindow::OnCompletion(int index)
+void MainWindow::OnCommand()
 {
-    type_actions_map::iterator iter = m_CompletionActions.find(index);
-    if(iter != m_CompletionActions.end()) //If it's in the map
-    {
-        Glib::ustring title = iter->second;
-        std::cout << "Action selected: " << title << std::endl;
-    }
+    std::cout << m_entry.get_text() << std::endl;
 }

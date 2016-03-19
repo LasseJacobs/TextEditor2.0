@@ -20,10 +20,10 @@ protected:
     void OnButtonBuffer1();
     void OnButtonBuffer2();
     void OnButtonRun();
+    void OnCommand();
 
     //See the comment in the implementation:
     //bool on_completion_match(const Glib::ustring& key, const Gtk::TreeModel::const_iterator& iter)
-    void OnCompletion(int index);
 
 
     //Tree model columns, for the EntryCompletion's filter model:
@@ -58,7 +58,7 @@ protected:
     Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
 
     Gtk::ButtonBox m_buttonBox;
-    Gtk::Button m_buttonQuit, m_buttonBuffer1, m_buttonBuffer2;
+    Gtk::Button m_buttonBuffer1, m_buttonBuffer2;
 };
 
 #endif //GTKMM_WINDOW_H
