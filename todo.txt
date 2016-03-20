@@ -1,0 +1,11 @@
+-Interface
+	*GetCurrentBuffer() needs result on the heap
+
+-Command line
+	*port command line over from C project
+	*giving run button a function
+
+-Status bar
+	*red error log function
+	*cursor position
+	*line numbers
