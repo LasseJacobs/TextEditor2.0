@@ -2,6 +2,7 @@
 #define GTKMM_WINDOW_H
 
 #include <gtkmm.h>
+#include <string>
 
 class MainWindow : public Gtk::Window
 {
@@ -27,8 +28,8 @@ protected:
     void OnCommand();
 
     //Interface
-    void SetCurrentBuffer(const char* content);
-    const char* GetCurrentBuffer() const;
+    void SetCurrentBuffer(const std::string content);
+    const std::string GetCurrentBuffer() const;
 
     //See the comment in the implementation:
     //bool on_completion_match(const Glib::ustring& key, const Gtk::TreeModel::const_iterator& iter)

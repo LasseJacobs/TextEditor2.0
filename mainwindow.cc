@@ -111,7 +111,7 @@ void MainWindow::OnButtonBuffer2()
 
 void MainWindow::OnButtonRun()
 {
-    SetCurrentBuffer("heyyyy what a guyyy create joke joajoa");
+    
 }
 
 /* You can do more complex matching with a handler like this.
@@ -243,12 +243,17 @@ void MainWindow::Log(const char* message)
 
 
 //Interface
-void MainWindow::SetCurrentBuffer(const char* content)
+void MainWindow::SetCurrentBuffer(const std::string content)
 {
-    const Glib::ustring t(content);
-    m_textView.get_buffer()->set_text(t);
+    const Glib::ustring tempString(content);
+    Glib::RefPtr<Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
+
+    currentBuffer->set_text(tempString);
 }
-const char* MainWindow::GetCurrentBuffer() const
+const std::string MainWindow::GetCurrentBuffer() const
 {
-    return m_textView.get_buffer()->get_text().c_str();
+    Glib::RefPtr<const Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
+    const Glib::ustring tempString = currentBuffer->get_text();
+
+    return Glib::locale_from_utf8(tempString);
 }
