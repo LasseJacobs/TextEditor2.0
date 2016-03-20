@@ -111,7 +111,7 @@ void MainWindow::OnButtonBuffer2()
 
 void MainWindow::OnButtonRun()
 {
-    
+
 }
 
 /* You can do more complex matching with a handler like this.
@@ -243,14 +243,15 @@ void MainWindow::Log(const char* message)
 
 
 //Interface
-void MainWindow::SetCurrentBuffer(const std::string content)
+void MainWindow::SetCurrentBuffer(std::string content)
 {
     const Glib::ustring tempString(content);
     Glib::RefPtr<Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
 
     currentBuffer->set_text(tempString);
 }
-const std::string MainWindow::GetCurrentBuffer() const
+
+std::string MainWindow::GetCurrentBuffer() const
 {
     Glib::RefPtr<const Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
     const Glib::ustring tempString = currentBuffer->get_text();

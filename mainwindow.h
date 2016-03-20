@@ -10,6 +10,10 @@ public:
     MainWindow();
     virtual ~MainWindow();
 
+    //Interface
+    void SetCurrentBuffer(std::string content);
+    std::string GetCurrentBuffer() const;
+
 protected:
     //Functions
     void FillBuffers();
@@ -26,10 +30,6 @@ protected:
     void OnButtonBuffer2();
     void OnButtonRun();
     void OnCommand();
-
-    //Interface
-    void SetCurrentBuffer(const std::string content);
-    const std::string GetCurrentBuffer() const;
 
     //See the comment in the implementation:
     //bool on_completion_match(const Glib::ustring& key, const Gtk::TreeModel::const_iterator& iter)

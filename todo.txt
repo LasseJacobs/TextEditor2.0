@@ -1,5 +1,3 @@
--Interface
-	*GetCurrentBuffer() needs result on the heap
 
 -Command line
 	*port command line over from C project
@@ -9,3 +7,6 @@
 	*red error log function
 	*cursor position
 	*line numbers
+
+-Tabs
+	*Highlight active tab
