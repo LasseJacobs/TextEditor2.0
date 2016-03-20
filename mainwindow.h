@@ -26,6 +26,10 @@ protected:
     void OnButtonRun();
     void OnCommand();
 
+    //Interface
+    void SetCurrentBuffer(const char* content);
+    const char* GetCurrentBuffer() const;
+
     //See the comment in the implementation:
     //bool on_completion_match(const Glib::ustring& key, const Gtk::TreeModel::const_iterator& iter)
 

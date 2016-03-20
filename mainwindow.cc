@@ -111,7 +111,7 @@ void MainWindow::OnButtonBuffer2()
 
 void MainWindow::OnButtonRun()
 {
-
+    SetCurrentBuffer("heyyyy what a guyyy create joke joajoa");
 }
 
 /* You can do more complex matching with a handler like this.
@@ -226,6 +226,8 @@ void MainWindow::OnCommand()
 
 void MainWindow::Log(const char* message)
 {
+    m_outputLog.override_color(Gdk::RGBA("default"), Gtk::STATE_FLAG_NORMAL);
+
     char statusBuffer[MAX_BUFFER_SIZE];
     if(strlen(message) > MAX_BUFFER_SIZE-1)
     {
@@ -237,4 +239,16 @@ void MainWindow::Log(const char* message)
         strncpy(statusBuffer, message, MAX_BUFFER_SIZE);
     }
     m_outputLog.set_text(statusBuffer);
+}
+
+
+//Interface
+void MainWindow::SetCurrentBuffer(const char* content)
+{
+    const Glib::ustring t(content);
+    m_textView.get_buffer()->set_text(t);
+}
+const char* MainWindow::GetCurrentBuffer() const
+{
+    return m_textView.get_buffer()->get_text().c_str();
 }
