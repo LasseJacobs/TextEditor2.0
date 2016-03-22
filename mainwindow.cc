@@ -7,8 +7,8 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
-                            m_buttonBuffer1("Use buffer 1"),
-                            m_buttonBuffer2("Use buffer 2")
+                            m_buttonBuffer1("Tab 1"),
+                            m_buttonBuffer2("Tab 2")
 {
     set_title("Editor");
     set_border_width(3);

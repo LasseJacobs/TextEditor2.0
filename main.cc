@@ -1,12 +1,15 @@
 #include "mainwindow.h"
 #include <gtkmm/application.h>
+#include <string>
+
+#include "commandhandler.h"
 
 int main(int argc, char *argv[])
 {
-  Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
 
-  MainWindow window;
+    MainWindow window;
 
-  //Shows the window and returns when it is closed.
-  return app->run(window);
+    //Shows the window and returns when it is closed.
+    return app->run(window);
 }
