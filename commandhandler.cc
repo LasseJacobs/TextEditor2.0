@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include"mainwindow.h"
 #include"commandhandler.h"
 
 CommandHandler::CommandHandler(MainWindow* window)
@@ -9,10 +10,8 @@ CommandHandler::CommandHandler(MainWindow* window)
 
 void CommandHandler::ExecuteCommand(std::string command)
 {
-    std::string* cmd = ParseCommand(command);
-
-    for(int i = 0; i < MAX_CMD_COUNT; i++)
-        std::cout << cmd[i] << std::endl;
+    std::string* parsedCommand = ParseCommand(command);
+    InterpretCommand(parsedCommand);
 }
 
 std::string* CommandHandler::ParseCommand(std::string command)
@@ -31,4 +30,62 @@ std::string* CommandHandler::ParseCommand(std::string command)
     parsedCommand[i] = command;
 
     return parsedCommand;
+}
+
+void CommandHandler::InterpretCommand(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "Save")
+    {
+        std::string fileName = m_window->GetCurrentFileName();
+        std::string content = m_window->GetCurrentBuffer();
+
+        if(parsedCommand[1] == "As")
+        {
+            if(parsedCommand[2] == "")
+            {
+                m_window->ErrorLog("Please give a file name");
+                return;
+            }
+            fileName = parsedCommand[2];
+        }
+        else
+        {
+            fileName = m_window->GetCurrentFileName();
+        }
+
+        if(m_iomanager.SaveFile(fileName, content))
+            m_window->Log("Save Succeful");
+        else
+            m_window->ErrorLog("Save Failed");
+    }
+    else if(parsedCommand[0] == "Open")
+    {
+        if(parsedCommand[1] == "")
+        {
+            m_window->ErrorLog("Please give a file name");
+            return;
+        }
+        else
+        {
+            std::string content = m_iomanager.OpenFile(parsedCommand[1]);
+            if(content != "")
+            {
+                m_window->Log("Open File Succeful");
+                m_window->SetCurrentBuffer(content);
+            }
+            else
+                m_window->ErrorLog("Open File Failed");
+        }
+    }
+    else if(parsedCommand[0] == "Clear")
+    {
+        if(parsedCommand[1] == "Status")
+            m_window->Log("");
+        else
+            m_window->ErrorLog("SaveFailed");
+    }
+    else
+    {
+        m_window->ErrorLog("Command not found...");
+    }
 }

@@ -1,14 +1,15 @@
 #include "mainwindow.h"
 #include <iostream>
 
-#define MAX_BUFFER_SIZE 40
+#define MAX_LOG_SIZE 40
 
 MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
                             m_buttonBuffer1("Tab 1"),
-                            m_buttonBuffer2("Tab 2")
+                            m_buttonBuffer2("Tab 2"),
+                            m_cmdHandler(this)
 {
     set_title("Editor");
     set_border_width(3);
@@ -175,22 +176,10 @@ void MainWindow::AddCompletionSet()
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 5;
-    row[m_Columns.m_col_name] = "New .c";
-
-    row = *(refCompletionModel->append());
-    row[m_Columns.m_col_id] = 6;
-    row[m_Columns.m_col_name] = "New .h";
-
-    row = *(refCompletionModel->append());
-    row[m_Columns.m_col_id] = 7;
-    row[m_Columns.m_col_name] = "New .cpp";
-
-    row = *(refCompletionModel->append());
-    row[m_Columns.m_col_id] = 8;
     row[m_Columns.m_col_name] = "Save As ";
 
     row = *(refCompletionModel->append());
-    row[m_Columns.m_col_id] = 4;
+    row[m_Columns.m_col_id] = 6;
     row[m_Columns.m_col_name] = "Open ";
 
     //Tell the completion what model column to use to
@@ -221,22 +210,40 @@ void MainWindow::AddCompletionSet()
 
 void MainWindow::OnCommand()
 {
-    std::cout << m_entry.get_text() << std::endl;
+    std::string strcmd = Glib::locale_from_utf8(m_entry.get_text());
+    m_cmdHandler.ExecuteCommand(strcmd);
 }
 
 void MainWindow::Log(const char* message)
 {
-    m_outputLog.override_color(Gdk::RGBA("default"), Gtk::STATE_FLAG_NORMAL);
+    m_outputLog.unset_color(Gtk::STATE_FLAG_NORMAL);
 
-    char statusBuffer[MAX_BUFFER_SIZE];
-    if(strlen(message) > MAX_BUFFER_SIZE-1)
+    char statusBuffer[MAX_LOG_SIZE];
+    if(strlen(message) > MAX_LOG_SIZE-1)
     {
-        strncpy(statusBuffer, message, MAX_BUFFER_SIZE-3);
+        strncpy(statusBuffer, message, MAX_LOG_SIZE-3);
         strcat(statusBuffer, "...");
     }
     else
     {
-        strncpy(statusBuffer, message, MAX_BUFFER_SIZE);
+        strncpy(statusBuffer, message, MAX_LOG_SIZE);
+    }
+    m_outputLog.set_text(statusBuffer);
+}
+
+void MainWindow::ErrorLog(const char* message)
+{
+    m_outputLog.override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
+
+    char statusBuffer[MAX_LOG_SIZE];
+    if(strlen(message) > MAX_LOG_SIZE-1)
+    {
+        strncpy(statusBuffer, message, MAX_LOG_SIZE-3);
+        strcat(statusBuffer, "...");
+    }
+    else
+    {
+        strncpy(statusBuffer, message, MAX_LOG_SIZE);
     }
     m_outputLog.set_text(statusBuffer);
 }
@@ -257,4 +264,10 @@ std::string MainWindow::GetCurrentBuffer() const
     const Glib::ustring tempString = currentBuffer->get_text();
 
     return Glib::locale_from_utf8(tempString);
+}
+
+std::string MainWindow::GetCurrentFileName() const
+{
+    std::string name = "test.txt";
+    return name;
 }

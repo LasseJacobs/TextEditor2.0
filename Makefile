@@ -4,7 +4,7 @@ CC=g++
 CFLAGS=-g -c -Wall -O0
 LDFLAGS=
 PNAME=hello
-OBJECTS=main.o mainwindow.o commandhandler.o
+OBJECTS=main.o mainwindow.o commandhandler.o fileio.o
 
 CFLAGS += `pkg-config --cflags gtkmm-3.0`
 LDFLAGS += `pkg-config --libs gtkmm-3.0`
@@ -22,6 +22,9 @@ mainwindow.o: mainwindow.cc
 
 commandhandler.o: commandhandler.cc
 	$(CC) $(CFLAGS) commandhandler.cc
+
+fileio.o: fileio.cc
+	$(CC) $(CFLAGS) fileio.cc
 
 
 clean:

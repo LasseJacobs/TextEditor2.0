@@ -3,6 +3,7 @@
 
 #include <gtkmm.h>
 #include <string>
+#include "commandhandler.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -13,11 +14,14 @@ public:
     //Interface
     void SetCurrentBuffer(std::string content);
     std::string GetCurrentBuffer() const;
+    std::string GetCurrentFileName() const;
+
+    void Log(const char* message);
+    void ErrorLog(const char* message);
 
 protected:
     //Functions
     void FillBuffers();
-    void Log(const char* message);
     //GUI
     void AddCommandLine();
     void AddTabs();
@@ -72,6 +76,7 @@ protected:
 
     //Status
     Gtk::Label m_outputLog;
+    CommandHandler m_cmdHandler;
 };
 
 #endif //GTKMM_WINDOW_H

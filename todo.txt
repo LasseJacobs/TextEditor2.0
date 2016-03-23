@@ -1,12 +1,15 @@
-
 -Command line
-	*port command line over from C project
 	*giving run button a function
 
 -Status bar
-	*red error log function
 	*cursor position
 	*line numbers
 
 -Tabs
 	*Highlight active tab
+	*making tabs at runtime
+
+-Commands
+	*New
+	*optimizing open command
+	*cleaning the code a little
