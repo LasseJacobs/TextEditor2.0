@@ -36,56 +36,72 @@ void CommandHandler::InterpretCommand(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "Save")
     {
-        std::string fileName = m_window->GetCurrentFileName();
-        std::string content = m_window->GetCurrentBuffer();
-
-        if(parsedCommand[1] == "As")
-        {
-            if(parsedCommand[2] == "")
-            {
-                m_window->ErrorLog("Please give a file name");
-                return;
-            }
-            fileName = parsedCommand[2];
-        }
-        else
-        {
-            fileName = m_window->GetCurrentFileName();
-        }
-
-        if(m_iomanager.SaveFile(fileName, content))
-            m_window->Log("Save Succeful");
-        else
-            m_window->ErrorLog("Save Failed");
+        SaveClass(&parsedCommand[1]);
     }
     else if(parsedCommand[0] == "Open")
+    {
+        OpenClass(&parsedCommand[1]);
+    }
+    else if(parsedCommand[0] == "Clear")
+    {
+        ClearClass(&parsedCommand[1]);
+    }
+    else
+    {
+        m_window->ErrorLog("Command not found...");
+    }
+}
+
+
+void CommandHandler::SaveClass(std::string* parsedCommand)
+{
+    std::string fileName = m_window->GetCurrentFileName();
+    std::string content = m_window->GetCurrentBuffer();
+
+    if(parsedCommand[0] == "As")
     {
         if(parsedCommand[1] == "")
         {
             m_window->ErrorLog("Please give a file name");
             return;
         }
-        else
-        {
-            std::string content = m_iomanager.OpenFile(parsedCommand[1]);
-            if(content != "")
-            {
-                m_window->Log("Open File Succeful");
-                m_window->SetCurrentBuffer(content);
-            }
-            else
-                m_window->ErrorLog("Open File Failed");
-        }
-    }
-    else if(parsedCommand[0] == "Clear")
-    {
-        if(parsedCommand[1] == "Status")
-            m_window->Log("");
-        else
-            m_window->ErrorLog("SaveFailed");
+        fileName = parsedCommand[1];
     }
     else
     {
-        m_window->ErrorLog("Command not found...");
+        fileName = m_window->GetCurrentFileName();
     }
+
+    if(m_iomanager.SaveFile(fileName, content))
+        m_window->Log("Save Succeful");
+    else
+        m_window->ErrorLog("Save Failed");
+}
+
+void CommandHandler::OpenClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "")
+    {
+        m_window->ErrorLog("Please give a file name");
+        return;
+    }
+    else
+    {
+        std::string content = m_iomanager.OpenFile(parsedCommand[0]);
+        if(content != "")
+        {
+            m_window->Log("Open File Succeful");
+            m_window->SetCurrentBuffer(content);
+        }
+        else
+            m_window->ErrorLog("Open File Failed");
+    }
+}
+
+void CommandHandler::ClearClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "Status")
+        m_window->Log("");
+    else
+        m_window->ErrorLog("SaveFailed");
 }

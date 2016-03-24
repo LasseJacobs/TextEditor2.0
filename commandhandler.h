@@ -17,6 +17,11 @@ private:
     std::string* ParseCommand(std::string command);
     void InterpretCommand(std::string* parsedCommand);
 
+    //Commands
+    void SaveClass(std::string* parsedCommand);
+    void OpenClass(std::string* parsedCommand);
+    void ClearClass(std::string* parsedCommand);
+
     MainWindow* m_window;
     FileIO m_iomanager;
 };
