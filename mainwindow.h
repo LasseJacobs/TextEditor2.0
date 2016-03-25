@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "commandhandler.h"
+#include "pagemem.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -13,7 +14,7 @@ public:
     virtual ~MainWindow();
 
     //Interface
-    void SetCurrentBuffer(std::string content);
+    void SetCurrentBuffer(const std::string& content);
     std::string GetCurrentBuffer() const;
     std::string GetCurrentFileName() const;
 
@@ -65,8 +66,9 @@ protected:
     Gtk::Entry m_entry;
     Gtk::Button m_buttonRun;
 
-    //TextView
+    //Notebook
     Gtk::Notebook m_notebook;
+    std::vector<page_mem> pageData;
 
     //Status
     Gtk::Label m_outputLog;

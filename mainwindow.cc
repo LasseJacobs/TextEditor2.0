@@ -57,24 +57,6 @@ void MainWindow::AddTabs()
               &MainWindow::OnNoteBookSwitchPage) );
 }
 
-void MainWindow::AddTextView(Gtk::Box* box)
-{
-    //Add the TreeView, inside a ScrolledWindow:
-    Gtk::ScrolledWindow* scrolledWindow = new Gtk::ScrolledWindow;
-    Gtk::TextView* textView = new Gtk::TextView;
-    scrolledWindow->add(*textView);
-
-    //Only show the scrollbars when they are necessary:
-    scrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
-    //Add textbuffer to view
-    Glib::RefPtr<Gtk::TextBuffer>* buffer= new Glib::RefPtr<Gtk::TextBuffer>;
-    textView->set_buffer(*buffer);
-
-    box->pack_start(*scrolledWindow);
-
-}
-
 void MainWindow::AddStatusBar()
 {
     m_vBox.add(m_statusBox);
@@ -89,6 +71,26 @@ void MainWindow::AddNewTab()
     m_notebook.append_page(*box, "new");
 }
 
+void MainWindow::AddTextView(Gtk::Box* box)
+{
+    //Collection of pointers
+    page_mem* pointers = new page_mem;
+    //Add the TreeView, inside a ScrolledWindow:
+    pointers->scrolledWindow = new Gtk::ScrolledWindow;
+    pointers->textView = new Gtk::TextView;
+    pointers->scrolledWindow->add(*pointers->textView);
+
+    //Only show the scrollbars when they are necessary:
+    pointers->scrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC,
+                                        Gtk::POLICY_AUTOMATIC);
+
+
+    box->pack_start(*pointers->scrolledWindow);
+
+    //push the data to pages stack
+    pageData.push_back(*pointers);
+}
+
 MainWindow::~MainWindow()
 {
 }
@@ -100,7 +102,6 @@ void MainWindow::OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num)
 
 void MainWindow::OnButtonRun()
 {
-
 }
 
 /* You can do more complex matching with a handler like this.
@@ -238,18 +239,20 @@ void MainWindow::ErrorLog(const char* message)
 
 
 //Interface
-void MainWindow::SetCurrentBuffer(std::string content)
+void MainWindow::SetCurrentBuffer(const std::string& content)
 {
-    const Glib::ustring tempString(content);
-    Glib::RefPtr<Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
+    Glib::ustring tempString(content);
+    int currentPage = m_notebook.get_current_page();
+    Glib::RefPtr<Gtk::TextBuffer> currentBuffer = pageData[currentPage].textView->get_buffer();
 
     currentBuffer->set_text(tempString);
 }
 
 std::string MainWindow::GetCurrentBuffer() const
 {
-    Glib::RefPtr<const Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
-    const Glib::ustring tempString = currentBuffer->get_text();
+    int currentPage = m_notebook.get_current_page();
+    const Glib::RefPtr<Gtk::TextBuffer> currentBuffer = pageData[currentPage].textView->get_buffer();
+    Glib::ustring tempString = currentBuffer->get_text();
 
     return Glib::locale_from_utf8(tempString);
 }
