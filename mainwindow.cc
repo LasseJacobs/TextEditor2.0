@@ -7,8 +7,6 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
-                            m_buttonBuffer1("Tab 1"),
-                            m_buttonBuffer2("Tab 2"),
                             m_cmdHandler(this)
 {
     set_title("Editor");
@@ -19,11 +17,10 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
 
     AddCommandLine();
     AddTabs();
-    AddTextView();
     AddStatusBar();
 
-    FillBuffers();
-    OnButtonBuffer1();
+    AddNewTab();
+    AddNewTab();
 
     show_all_children();
 }
@@ -53,29 +50,28 @@ void MainWindow::AddCommandLine()
 void MainWindow::AddTabs()
 {
     //Add buttons:
-    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
-
-    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
-    //m_buttonBox.set_border_width(5);
-    m_buttonBox.set_layout(Gtk::BUTTONBOX_START);
+    m_vBox.pack_start(m_notebook);
 
     //Connect signals:
-    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer1) );
-    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer2) );
+    m_notebook.signal_switch_page().connect(sigc::mem_fun(*this,
+              &MainWindow::OnNoteBookSwitchPage) );
 }
 
-void MainWindow::AddTextView()
+void MainWindow::AddTextView(Gtk::Box* box)
 {
-    //Add the TreeView, inside a ScrolledWindow, with the button underneath:
-    m_scrolledWindow.add(m_textView);
+    //Add the TreeView, inside a ScrolledWindow:
+    Gtk::ScrolledWindow* scrolledWindow = new Gtk::ScrolledWindow;
+    Gtk::TextView* textView = new Gtk::TextView;
+    scrolledWindow->add(*textView);
 
     //Only show the scrollbars when they are necessary:
-    m_scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    scrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-    m_vBox.pack_start(m_scrolledWindow);
+    //Add textbuffer to view
+    Glib::RefPtr<Gtk::TextBuffer>* buffer= new Glib::RefPtr<Gtk::TextBuffer>;
+    textView->set_buffer(*buffer);
+
+    box->pack_start(*scrolledWindow);
 
 }
 
@@ -86,29 +82,21 @@ void MainWindow::AddStatusBar()
     m_statusBox.pack_start(m_outputLog, Gtk::PACK_SHRINK);
 }
 
-void MainWindow::FillBuffers()
+void MainWindow::AddNewTab()
 {
-    m_refTextBuffer1 = Gtk::TextBuffer::create();
-    m_refTextBuffer1->set_text("");
-
-    m_refTextBuffer2 = Gtk::TextBuffer::create();
-    m_refTextBuffer2->set_text("");
+    Gtk::Box* box = new Gtk::Box;
+    AddTextView(box);
+    m_notebook.append_page(*box, "new");
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::OnButtonBuffer1()
+void MainWindow::OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num)
 {
-    m_textView.set_buffer(m_refTextBuffer1);
+    //You can also use m_Notebook.get_current_page() to get this index.
 }
-
-void MainWindow::OnButtonBuffer2()
-{
-    m_textView.set_buffer(m_refTextBuffer2);
-}
-
 
 void MainWindow::OnButtonRun()
 {

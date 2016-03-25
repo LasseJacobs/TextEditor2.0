@@ -3,6 +3,7 @@
 
 #include <gtkmm.h>
 #include <string>
+#include <vector>
 #include "commandhandler.h"
 
 class MainWindow : public Gtk::Window
@@ -21,17 +22,16 @@ public:
 
 protected:
     //Functions
-    void FillBuffers();
+    void AddNewTab();
+    void AddTextView(Gtk::Box* box);
     //GUI
     void AddCommandLine();
     void AddTabs();
-    void AddTextView();
     void AddCompletionSet();
     void AddStatusBar();
 
     //Signal handlers:
-    void OnButtonBuffer1();
-    void OnButtonBuffer2();
+    void OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num);
     void OnButtonRun();
     void OnCommand();
 
@@ -66,13 +66,7 @@ protected:
     Gtk::Button m_buttonRun;
 
     //TextView
-    Gtk::ScrolledWindow m_scrolledWindow;
-    Gtk::TextView m_textView;
-
-    Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
-
-    Gtk::ButtonBox m_buttonBox;
-    Gtk::Button m_buttonBuffer1, m_buttonBuffer2;
+    Gtk::Notebook m_notebook;
 
     //Status
     Gtk::Label m_outputLog;
