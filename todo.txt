@@ -1,15 +1,18 @@
 -Command line
 	*giving run button a function
+	*Changing the run button color
 
 -Status bar
 	*cursor position
 	*line numbers
 
--Tabs
-	*Highlight active tab
-	*making tabs at runtime
-
 -Commands
 	*New
+	*Close
+	*Close All
+
+-Command bar
 	*optimizing open command
 	*cleaning the code a little
+	*removing the tabs background
+	*adding ui close button
