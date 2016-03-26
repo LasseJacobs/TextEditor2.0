@@ -62,7 +62,7 @@ void CommandHandler::SaveClass(std::string* parsedCommand)
     {
         if(parsedCommand[1] == "")
         {
-            m_window->ErrorLog("Please give a file name");
+            m_window->ErrorLog("Please give a filename");
             return;
         }
         fileName = parsedCommand[1];
@@ -70,6 +70,10 @@ void CommandHandler::SaveClass(std::string* parsedCommand)
     else
     {
         fileName = m_window->GetCurrentFileName();
+        if(fileName == "new")
+        {
+            m_window->ErrorLog("Please specify a filename");
+        }
     }
 
     if(m_iomanager.SaveFile(fileName, content))
@@ -82,7 +86,7 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "")
     {
-        m_window->ErrorLog("Please give a file name");
+        m_window->ErrorLog("Please give a filename");
         return;
     }
     else
@@ -91,7 +95,7 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
         if(content != "")
         {
             m_window->Log("Open File Succeful");
-            m_window->SetCurrentBuffer(content);
+            m_window->SetCurrentBuffer(parsedCommand[0], content);
         }
         else
             m_window->ErrorLog("Open File Failed");

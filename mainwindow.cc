@@ -20,7 +20,6 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
     AddStatusBar();
 
     AddNewTab();
-    AddNewTab();
 
     show_all_children();
 }
@@ -64,11 +63,22 @@ void MainWindow::AddStatusBar()
     m_statusBox.pack_start(m_outputLog, Gtk::PACK_SHRINK);
 }
 
-void MainWindow::AddNewTab()
+void MainWindow::AddNewTab(const char* filename)
 {
     Gtk::Box* box = new Gtk::Box;
     AddTextView(box);
-    m_notebook.append_page(*box, "new");
+    m_notebook.append_page(*box, filename);
+
+    m_notebook.show_all();
+}
+
+void MainWindow::OpenNewTab(const char* filename)
+{
+    AddNewTab(filename);
+    int latestPage = m_notebook.get_n_pages() - 1;
+    m_notebook.set_current_page(latestPage);
+
+    m_notebook.show_all();
 }
 
 void MainWindow::AddTextView(Gtk::Box* box)
@@ -102,12 +112,16 @@ void MainWindow::OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num)
 
 void MainWindow::OnButtonRun()
 {
+    std::cout << GetCurrentFileName() << std::endl;
 }
 
 /* You can do more complex matching with a handler like this.
- * For instance, you could check for substrings inside the string instead of the start,
- * or you could look for the key in extra model columns as well as the model column that will be displayed.
- * The code here is not actually more complex - it's a reimplementation of the default behaviour.
+ * For instance, you could check for substrings inside the string
+ * instead of the start,
+ * or you could look for the key in extra model columns
+ * as well as the model column that will be displayed.
+ * The code here is not actually more complex - it's a reimplementation
+ * of the default behaviour.
  *
 bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
         Gtk::TreeModel::const_iterator& iter)
@@ -134,11 +148,13 @@ bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
 void MainWindow::AddCompletionSet()
 {
     //Add an EntryCompletion:
-    Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
+    Glib::RefPtr<Gtk::EntryCompletion> completion
+                            = Gtk::EntryCompletion::create();
     m_entry.set_completion(completion);
 
     //Create and fill the completion's filter model
-    Glib::RefPtr<Gtk::ListStore> refCompletionModel = Gtk::ListStore::create(m_Columns);
+    Glib::RefPtr<Gtk::ListStore> refCompletionModel
+                            = Gtk::ListStore::create(m_Columns);
     completion->set_model(refCompletionModel);
 
     // For more complex comparisons, use a filter match callback, like this.
@@ -239,11 +255,16 @@ void MainWindow::ErrorLog(const char* message)
 
 
 //Interface
-void MainWindow::SetCurrentBuffer(const std::string& content)
+void MainWindow::SetCurrentBuffer(  const std::string& filename,
+                                    const std::string& content)
 {
+    //Creating a new tab
+    OpenNewTab(filename.c_str());
+    //Setting the buffer
     Glib::ustring tempString(content);
     int currentPage = m_notebook.get_current_page();
-    Glib::RefPtr<Gtk::TextBuffer> currentBuffer = pageData[currentPage].textView->get_buffer();
+    Glib::RefPtr<Gtk::TextBuffer> currentBuffer
+                = pageData[currentPage].textView->get_buffer();
 
     currentBuffer->set_text(tempString);
 }
@@ -251,14 +272,18 @@ void MainWindow::SetCurrentBuffer(const std::string& content)
 std::string MainWindow::GetCurrentBuffer() const
 {
     int currentPage = m_notebook.get_current_page();
-    const Glib::RefPtr<Gtk::TextBuffer> currentBuffer = pageData[currentPage].textView->get_buffer();
+    const Glib::RefPtr<Gtk::TextBuffer> currentBuffer
+                = pageData[currentPage].textView->get_buffer();
     Glib::ustring tempString = currentBuffer->get_text();
 
     return Glib::locale_from_utf8(tempString);
 }
 
-std::string MainWindow::GetCurrentFileName() const
+std::string MainWindow::GetCurrentFileName()
 {
-    std::string name = "test.txt";
-    return name;
+    int currentPage = m_notebook.get_current_page();
+    Gtk::Widget* currentWidget = m_notebook.get_nth_page(currentPage);
+    Glib::ustring filename = m_notebook.get_tab_label_text(*currentWidget);
+
+    return Glib::locale_from_utf8(filename);
 }
