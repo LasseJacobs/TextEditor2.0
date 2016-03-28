@@ -15,4 +15,5 @@
 	*optimizing open command
 	*cleaning the code a little
 	*removing the tabs background
-	*adding ui close button
+
+CLEANING THE CODE
