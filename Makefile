@@ -4,7 +4,7 @@ CC=g++
 CFLAGS=-g -c -Wall -O0
 LDFLAGS=
 PNAME=hello
-OBJECTS=main.o mainwindow.o commandhandler.o fileio.o
+OBJECTS=main.o mainwindow.o commandhandler.o fileio.o closabletab.o
 
 CFLAGS += `pkg-config --cflags gtkmm-3.0`
 LDFLAGS += `pkg-config --libs gtkmm-3.0`
@@ -26,6 +26,8 @@ commandhandler.o: commandhandler.cc
 fileio.o: fileio.cc
 	$(CC) $(CFLAGS) fileio.cc
 
+closabletab.o: closabletab.cc
+	$(CC) $(CFLAGS) closabletab.cc
 
 clean:
 	rm -rf *o $(PNAME)

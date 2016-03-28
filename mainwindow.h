@@ -25,7 +25,8 @@ protected:
     //Functions
     void AddNewTab(const char* filename = "new");
     void OpenNewTab(const char* filename = "new");
-    void AddTextView(Gtk::Box* box);
+    void AddTextView(page_mem* pointers, Gtk::Box* box);
+    void AddTabLabel(page_mem* pointers, Gtk::Box* box, const char* filename);
     //GUI
     void AddCommandLine();
     void AddTabs();

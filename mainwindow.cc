@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "closabletab.h"
 #include <iostream>
 
 #define MAX_LOG_SIZE 40
@@ -65,9 +66,17 @@ void MainWindow::AddStatusBar()
 
 void MainWindow::AddNewTab(const char* filename)
 {
-    Gtk::Box* box = new Gtk::Box;
-    AddTextView(box);
-    m_notebook.append_page(*box, filename);
+    //Collection of pointers
+    page_mem* pointers = new page_mem;
+    Gtk::Box* contentBox = new Gtk::Box;
+    Gtk::Box* labelBox = new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
+
+    AddTextView(pointers, contentBox);
+    AddTabLabel(pointers, labelBox, filename);
+    m_notebook.append_page(*contentBox, *new ClosableTab(filename, &m_notebook));
+
+    //push the data to pages stack
+    pageData.push_back(*pointers);
 
     m_notebook.show_all();
 }
@@ -81,10 +90,8 @@ void MainWindow::OpenNewTab(const char* filename)
     m_notebook.show_all();
 }
 
-void MainWindow::AddTextView(Gtk::Box* box)
+void MainWindow::AddTextView(page_mem* pointers, Gtk::Box* box)
 {
-    //Collection of pointers
-    page_mem* pointers = new page_mem;
     //Add the TreeView, inside a ScrolledWindow:
     pointers->scrolledWindow = new Gtk::ScrolledWindow;
     pointers->textView = new Gtk::TextView;
@@ -96,9 +103,22 @@ void MainWindow::AddTextView(Gtk::Box* box)
 
 
     box->pack_start(*pointers->scrolledWindow);
+}
 
-    //push the data to pages stack
-    pageData.push_back(*pointers);
+void MainWindow::AddTabLabel(   page_mem* pointers,
+                                Gtk::Box* box,
+                                const char* filename)
+{
+    //Constructing the tab label
+    pointers->nameLabel = new Gtk::Label(filename);
+    pointers->closeButton = new Gtk::Button;
+    pointers->closeButton->set_image_from_icon_name("window-close");
+
+    box->pack_start(*pointers->nameLabel);
+    box->pack_start(*pointers->closeButton);
+    box->set_spacing(6);
+
+    box->show_all();
 }
 
 MainWindow::~MainWindow()
