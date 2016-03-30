@@ -21,7 +21,6 @@ void ClosableTab::CreateUI(const char* name)
     pack_start( *m_caption );
     pack_start( *m_closeButton );
     show_all();
-    //m_close->hide();
 }
 
 void ClosableTab::OnButtonClicked()
