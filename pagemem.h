@@ -1,12 +1,12 @@
 #ifndef PAGE_MEM_H
 #define PAGE_MEM_H
 
-struct page_mem{
-    Gtk::Label* nameLabel;
-    Gtk::Button* closeButton;
+class ScrollableText;
+class ClosableTab;
 
-    Gtk::ScrolledWindow* scrolledWindow;
-    Gtk::TextView* textView;
+struct page_mem{
+    ScrollableText* scrollText;
+    ClosableTab* closableTab;
 };
 
 #endif

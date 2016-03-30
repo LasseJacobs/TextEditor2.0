@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "scrollabletext.h"
 #include "closabletab.h"
 #include <iostream>
 
@@ -66,17 +67,14 @@ void MainWindow::AddStatusBar()
 
 void MainWindow::AddNewTab(const char* filename)
 {
-    //Collection of pointers
-    page_mem* pointers = new page_mem;
-    Gtk::Box* contentBox = new Gtk::Box;
-    Gtk::Box* labelBox = new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
+    ScrollableText* scrollText = new ScrollableText;
+    ClosableTab* closableTab = new ClosableTab(filename, &m_notebook);
 
-    AddTextView(pointers, contentBox);
-    AddTabLabel(pointers, labelBox, filename);
-    m_notebook.append_page(*contentBox, *new ClosableTab(filename, &m_notebook));
+    m_notebook.append_page( *scrollText, *closableTab);
 
     //push the data to pages stack
-    pageData.push_back(*pointers);
+    page_mem tempMem = { scrollText, closableTab};
+    pageData.push_back(tempMem);
 
     m_notebook.show_all();
 }
@@ -90,39 +88,13 @@ void MainWindow::OpenNewTab(const char* filename)
     m_notebook.show_all();
 }
 
-void MainWindow::AddTextView(page_mem* pointers, Gtk::Box* box)
-{
-    //Add the TreeView, inside a ScrolledWindow:
-    pointers->scrolledWindow = new Gtk::ScrolledWindow;
-    pointers->textView = new Gtk::TextView;
-    pointers->scrolledWindow->add(*pointers->textView);
-
-    //Only show the scrollbars when they are necessary:
-    pointers->scrolledWindow->set_policy(Gtk::POLICY_AUTOMATIC,
-                                        Gtk::POLICY_AUTOMATIC);
-
-
-    box->pack_start(*pointers->scrolledWindow);
-}
-
-void MainWindow::AddTabLabel(   page_mem* pointers,
-                                Gtk::Box* box,
-                                const char* filename)
-{
-    //Constructing the tab label
-    pointers->nameLabel = new Gtk::Label(filename);
-    pointers->closeButton = new Gtk::Button;
-    pointers->closeButton->set_image_from_icon_name("window-close");
-
-    box->pack_start(*pointers->nameLabel);
-    box->pack_start(*pointers->closeButton);
-    box->set_spacing(6);
-
-    box->show_all();
-}
-
 MainWindow::~MainWindow()
 {
+    for(unsigned int i = 0; i < pageData.size(); i++)
+    {
+        delete pageData[i].scrollText;
+        delete pageData[i].closableTab;
+    }
 }
 
 void MainWindow::OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num)
@@ -284,7 +256,7 @@ void MainWindow::SetCurrentBuffer(  const std::string& filename,
     Glib::ustring tempString(content);
     int currentPage = m_notebook.get_current_page();
     Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = pageData[currentPage].textView->get_buffer();
+                = pageData[currentPage].scrollText->get_buffer();
 
     currentBuffer->set_text(tempString);
 }
@@ -293,17 +265,17 @@ std::string MainWindow::GetCurrentBuffer() const
 {
     int currentPage = m_notebook.get_current_page();
     const Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = pageData[currentPage].textView->get_buffer();
+                = pageData[currentPage].scrollText->get_buffer();
     Glib::ustring tempString = currentBuffer->get_text();
 
     return Glib::locale_from_utf8(tempString);
 }
 
-std::string MainWindow::GetCurrentFileName()
+std::string MainWindow::GetCurrentFileName() const
 {
     int currentPage = m_notebook.get_current_page();
-    Gtk::Widget* currentWidget = m_notebook.get_nth_page(currentPage);
-    Glib::ustring filename = m_notebook.get_tab_label_text(*currentWidget);
+    const Glib::ustring filename
+                = pageData[currentPage].closableTab->get_tab_label_text();
 
     return Glib::locale_from_utf8(filename);
 }

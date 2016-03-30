@@ -16,7 +16,7 @@ public:
     //Interface
     void SetCurrentBuffer(const std::string& filename, const std::string& content);
     std::string GetCurrentBuffer() const;
-    std::string GetCurrentFileName();
+    std::string GetCurrentFileName() const;
 
     void Log(const char* message);
     void ErrorLog(const char* message);
@@ -25,8 +25,6 @@ protected:
     //Functions
     void AddNewTab(const char* filename = "new");
     void OpenNewTab(const char* filename = "new");
-    void AddTextView(page_mem* pointers, Gtk::Box* box);
-    void AddTabLabel(page_mem* pointers, Gtk::Box* box, const char* filename);
     //GUI
     void AddCommandLine();
     void AddTabs();
