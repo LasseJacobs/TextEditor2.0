@@ -11,6 +11,8 @@ LDFLAGS += `pkg-config --libs gtkmm-3.0`
 
 all: clean build
 
+smart: build
+
 build: $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(PNAME) $(LDFLAGS)
 
