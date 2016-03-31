@@ -20,6 +20,7 @@ private:
     //Commands
     void SaveClass(std::string* parsedCommand);
     void OpenClass(std::string* parsedCommand);
+    void NewClass(std::string* parsedCommand);
     void ClearClass(std::string* parsedCommand);
 
     MainWindow* m_window;

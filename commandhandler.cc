@@ -3,6 +3,8 @@
 #include"mainwindow.h"
 #include"commandhandler.h"
 
+#define CMD_NOT_FOUND "Command not found..."
+
 CommandHandler::CommandHandler(MainWindow* window)
 {
     m_window = window;
@@ -42,13 +44,17 @@ void CommandHandler::InterpretCommand(std::string* parsedCommand)
     {
         OpenClass(&parsedCommand[1]);
     }
+    else if(parsedCommand[0] == "New")
+    {
+        NewClass(&parsedCommand[1]);
+    }
     else if(parsedCommand[0] == "Clear")
     {
         ClearClass(&parsedCommand[1]);
     }
     else
     {
-        m_window->ErrorLog("Command not found...");
+        m_window->ErrorLog(CMD_NOT_FOUND);
     }
 }
 
@@ -102,10 +108,20 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
     }
 }
 
+void CommandHandler::NewClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "File")
+    {
+        m_window->SetCurrentBuffer("new", "");
+    }
+    else
+        m_window->ErrorLog(CMD_NOT_FOUND);
+}
+
 void CommandHandler::ClearClass(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "Status")
         m_window->Log("");
     else
-        m_window->ErrorLog("SaveFailed");
+        m_window->ErrorLog(CMD_NOT_FOUND);
 }
