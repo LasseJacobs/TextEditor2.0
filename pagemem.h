@@ -1,8 +1,8 @@
 #ifndef PAGE_MEM_H
 #define PAGE_MEM_H
 
-class ScrollableText;
 class ClosableTab;
+class ScrollableText;
 
 struct page_mem{
     ScrollableText* scrollText;

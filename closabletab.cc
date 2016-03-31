@@ -2,7 +2,7 @@
 #include "closabletab.h"
 
 
-ClosableTab::ClosableTab(const char* name, Gtk::Notebook* parent)
+ClosableTab::ClosableTab(const char* name, MemoryNotebook* parent)
         : Gtk::Box(Gtk::ORIENTATION_HORIZONTAL)
 {
     m_parent = parent;
@@ -29,5 +29,6 @@ void ClosableTab::CreateUI(const char* name)
 
 void ClosableTab::OnButtonClicked()
 {
-    m_parent->remove_page(m_parent->page_num(*this));
+    int pageNumber = m_parent->PageNumber(this);
+    m_parent->RemovePage(pageNumber);
 }

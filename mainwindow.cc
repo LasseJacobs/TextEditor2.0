@@ -21,7 +21,7 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
     AddTabs();
     AddStatusBar();
 
-    AddNewTab();
+    StartUpTab();
 
     show_all_children();
 }
@@ -52,10 +52,11 @@ void MainWindow::AddTabs()
 {
     //Add buttons:
     m_vBox.pack_start(m_notebook);
+}
 
-    //Connect signals:
-    m_notebook.signal_switch_page().connect(sigc::mem_fun(*this,
-              &MainWindow::OnNoteBookSwitchPage) );
+void MainWindow::StartUpTab()
+{
+    m_notebook.AddNewTab();
 }
 
 void MainWindow::AddStatusBar()
@@ -65,41 +66,9 @@ void MainWindow::AddStatusBar()
     m_statusBox.pack_start(m_outputLog, Gtk::PACK_SHRINK);
 }
 
-void MainWindow::AddNewTab(const char* filename)
-{
-    ScrollableText* scrollText = new ScrollableText;
-    ClosableTab* closableTab = new ClosableTab(filename, &m_notebook);
-
-    m_notebook.append_page( *scrollText, *closableTab);
-
-    //push the data to pages stack
-    page_mem tempMem = { scrollText, closableTab};
-    pageData.push_back(tempMem);
-
-    m_notebook.show_all();
-}
-
-void MainWindow::OpenNewTab(const char* filename)
-{
-    AddNewTab(filename);
-    int latestPage = m_notebook.get_n_pages() - 1;
-    m_notebook.set_current_page(latestPage);
-
-    m_notebook.show_all();
-}
-
 MainWindow::~MainWindow()
 {
-    for(unsigned int i = 0; i < pageData.size(); i++)
-    {
-        delete pageData[i].scrollText;
-        delete pageData[i].closableTab;
-    }
-}
 
-void MainWindow::OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num)
-{
-    //You can also use m_Notebook.get_current_page() to get this index.
 }
 
 void MainWindow::OnButtonRun()
@@ -250,32 +219,15 @@ void MainWindow::ErrorLog(const char* message)
 void MainWindow::SetCurrentBuffer(  const std::string& filename,
                                     const std::string& content)
 {
-    //Creating a new tab
-    OpenNewTab(filename.c_str());
-    //Setting the buffer
-    Glib::ustring tempString(content);
-    int currentPage = m_notebook.get_current_page();
-    Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = pageData[currentPage].scrollText->get_buffer();
-
-    currentBuffer->set_text(tempString);
+    m_notebook.SetCurrentBuffer(filename, content);
 }
 
 std::string MainWindow::GetCurrentBuffer() const
 {
-    int currentPage = m_notebook.get_current_page();
-    const Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = pageData[currentPage].scrollText->get_buffer();
-    Glib::ustring tempString = currentBuffer->get_text();
-
-    return Glib::locale_from_utf8(tempString);
+    return m_notebook.GetCurrentBuffer();
 }
 
 std::string MainWindow::GetCurrentFileName() const
 {
-    int currentPage = m_notebook.get_current_page();
-    const Glib::ustring filename
-                = pageData[currentPage].closableTab->get_tab_label_text();
-
-    return Glib::locale_from_utf8(filename);
+    return m_notebook.GetCurrentFileName();
 }

@@ -17,3 +17,9 @@
 	*removing the tabs background
 
 CLEANING THE CODE
+
+-Creating new notebook to handle memory
+	*and giving this some of the responsibility of the main window
+
+gdfhsdjfhsdjfhs
+dfjdkfjsdkfjsdkfjsd

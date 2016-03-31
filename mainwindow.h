@@ -3,9 +3,8 @@
 
 #include <gtkmm.h>
 #include <string>
-#include <vector>
 #include "commandhandler.h"
-#include "pagemem.h"
+#include "memorynotebook.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -23,8 +22,7 @@ public:
 
 protected:
     //Functions
-    void AddNewTab(const char* filename = "new");
-    void OpenNewTab(const char* filename = "new");
+    void StartUpTab();
     //GUI
     void AddCommandLine();
     void AddTabs();
@@ -32,7 +30,6 @@ protected:
     void AddStatusBar();
 
     //Signal handlers:
-    void OnNoteBookSwitchPage(Gtk::Widget* page, guint page_num);
     void OnButtonRun();
     void OnCommand();
 
@@ -67,8 +64,7 @@ protected:
     Gtk::Button m_buttonRun;
 
     //Notebook
-    Gtk::Notebook m_notebook;
-    std::vector<page_mem> pageData;
+    MemoryNotebook m_notebook;
 
     //Status
     Gtk::Label m_outputLog;
