@@ -138,7 +138,7 @@ void MainWindow::AddCompletionSet()
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 4;
-    row[m_Columns.m_col_name] = "New";
+    row[m_Columns.m_col_name] = "New File";
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 5;
