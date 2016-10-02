@@ -16,6 +16,7 @@ public:
     void SetCurrentBuffer(const std::string& filename, const std::string& content);
     std::string GetCurrentBuffer() const;
     std::string GetCurrentFileName() const;
+    MemoryNotebook* GetNotebook() { return &m_notebook; }
 
     void Log(const char* message);
     void ErrorLog(const char* message);
@@ -49,6 +50,7 @@ protected:
     };
 
     ModelColumns m_Columns;
+    static int m_autoCompleteCount;
 
     typedef std::map<int, Glib::ustring> type_actions_map;
     type_actions_map m_CompletionActions;

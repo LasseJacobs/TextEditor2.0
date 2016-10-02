@@ -148,6 +148,10 @@ void MainWindow::AddCompletionSet()
     row[m_Columns.m_col_id] = 6;
     row[m_Columns.m_col_name] = "Open ";
 
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 7;
+    row[m_Columns.m_col_name] = "Close File";
+
     //Tell the completion what model column to use to
     //- look for a match (when we use the default matching, instead of
     //  set_match_func().

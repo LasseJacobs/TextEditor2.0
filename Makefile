@@ -6,8 +6,8 @@ LDFLAGS=
 PNAME=hello
 OBJECTS=main.o mainwindow.o commandhandler.o fileio.o closabletab.o scrollabletext.o memorynotebook.o
 
-CFLAGS += `pkg-config --cflags gtkmm-3.0`
-LDFLAGS += `pkg-config --libs gtkmm-3.0`
+CFLAGS += `pkg-config --cflags gtkmm-3.0 gtksourceviewmm-3.0`
+LDFLAGS += `pkg-config --libs gtkmm-3.0 gtksourceviewmm-3.0`
 
 all: clean build
 

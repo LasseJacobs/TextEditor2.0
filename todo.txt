@@ -7,8 +7,7 @@
 	*line numbers
 
 -Commands
-	*New
-	*Close
+	*change New to New <filename>
 	*Close All
 
 -Command bar
@@ -20,6 +19,3 @@ CLEANING THE CODE
 
 -Creating new notebook to handle memory
 	*and giving this some of the responsibility of the main window
-
-gdfhsdjfhsdjfhs
-dfjdkfjsdkfjsdkfjsd

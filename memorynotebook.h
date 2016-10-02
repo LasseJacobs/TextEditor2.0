@@ -18,10 +18,11 @@ public:
     void AddNewTab(const char* filename = "new");
     void OpenNewTab(const char* filename = "new");
 
+    void RemoveCurrentPage();
     void RemovePage(int pagenum);
     int PageNumber(ClosableTab* tab);
 protected:
-    std::vector<page_mem> pageData;
+    std::vector<page_mem> m_pageData;
 };
 
 #endif

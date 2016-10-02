@@ -52,6 +52,10 @@ void CommandHandler::InterpretCommand(std::string* parsedCommand)
     {
         ClearClass(&parsedCommand[1]);
     }
+    else if(parsedCommand[0] == "Close")
+    {
+        CloseClass(&parsedCommand[1]);
+    }
     else
     {
         m_window->ErrorLog(CMD_NOT_FOUND);
@@ -122,6 +126,16 @@ void CommandHandler::ClearClass(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "Status")
         m_window->Log("");
+    else
+        m_window->ErrorLog(CMD_NOT_FOUND);
+}
+
+void CommandHandler::CloseClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "File")
+    {
+        m_window->GetNotebook()->RemoveCurrentPage();
+    }
     else
         m_window->ErrorLog(CMD_NOT_FOUND);
 }

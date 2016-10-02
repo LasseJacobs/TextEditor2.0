@@ -2,16 +2,17 @@
 #define SCROLL_TEXT_H
 
 #include <gtkmm.h>
+#include <gtksourceviewmm.h>
 
 class ScrollableText : public Gtk::Box
 {
 public:
     ScrollableText();
-    Glib::RefPtr<const Gtk::TextBuffer> get_buffer() const;
-    Glib::RefPtr<Gtk::TextBuffer> get_buffer();
+    Glib::RefPtr<const Gsv::Buffer> get_buffer() const;
+    Glib::RefPtr<Gsv::Buffer> get_buffer();
 protected:
     Gtk::ScrolledWindow m_scrollWindow;
-    Gtk::TextView m_textView;
+    Gsv::View m_textView;
 };
 
 #endif
