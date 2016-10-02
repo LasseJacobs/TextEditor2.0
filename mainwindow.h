@@ -4,6 +4,7 @@
 #include <gtkmm.h>
 #include <string>
 #include "commandhandler.h"
+#include "memorynotebook.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -12,26 +13,24 @@ public:
     virtual ~MainWindow();
 
     //Interface
-    void SetCurrentBuffer(std::string content);
+    void SetCurrentBuffer(const std::string& filename, const std::string& content);
     std::string GetCurrentBuffer() const;
     std::string GetCurrentFileName() const;
+    MemoryNotebook* GetNotebook() { return &m_notebook; }
 
     void Log(const char* message);
     void ErrorLog(const char* message);
 
 protected:
     //Functions
-    void FillBuffers();
+    void StartUpTab();
     //GUI
     void AddCommandLine();
     void AddTabs();
-    void AddTextView();
     void AddCompletionSet();
     void AddStatusBar();
 
     //Signal handlers:
-    void OnButtonBuffer1();
-    void OnButtonBuffer2();
     void OnButtonRun();
     void OnCommand();
 
@@ -51,6 +50,7 @@ protected:
     };
 
     ModelColumns m_Columns;
+    static int m_autoCompleteCount;
 
     typedef std::map<int, Glib::ustring> type_actions_map;
     type_actions_map m_CompletionActions;
@@ -65,14 +65,8 @@ protected:
     Gtk::Entry m_entry;
     Gtk::Button m_buttonRun;
 
-    //TextView
-    Gtk::ScrolledWindow m_scrolledWindow;
-    Gtk::TextView m_textView;
-
-    Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1, m_refTextBuffer2;
-
-    Gtk::ButtonBox m_buttonBox;
-    Gtk::Button m_buttonBuffer1, m_buttonBuffer2;
+    //Notebook
+    MemoryNotebook m_notebook;
 
     //Status
     Gtk::Label m_outputLog;

@@ -3,6 +3,8 @@
 #include"mainwindow.h"
 #include"commandhandler.h"
 
+#define CMD_NOT_FOUND "Command not found..."
+
 CommandHandler::CommandHandler(MainWindow* window)
 {
     m_window = window;
@@ -42,13 +44,21 @@ void CommandHandler::InterpretCommand(std::string* parsedCommand)
     {
         OpenClass(&parsedCommand[1]);
     }
+    else if(parsedCommand[0] == "New")
+    {
+        NewClass(&parsedCommand[1]);
+    }
     else if(parsedCommand[0] == "Clear")
     {
         ClearClass(&parsedCommand[1]);
     }
+    else if(parsedCommand[0] == "Close")
+    {
+        CloseClass(&parsedCommand[1]);
+    }
     else
     {
-        m_window->ErrorLog("Command not found...");
+        m_window->ErrorLog(CMD_NOT_FOUND);
     }
 }
 
@@ -62,7 +72,7 @@ void CommandHandler::SaveClass(std::string* parsedCommand)
     {
         if(parsedCommand[1] == "")
         {
-            m_window->ErrorLog("Please give a file name");
+            m_window->ErrorLog("Please give a filename");
             return;
         }
         fileName = parsedCommand[1];
@@ -70,6 +80,10 @@ void CommandHandler::SaveClass(std::string* parsedCommand)
     else
     {
         fileName = m_window->GetCurrentFileName();
+        if(fileName == "new")
+        {
+            m_window->ErrorLog("Please specify a filename");
+        }
     }
 
     if(m_iomanager.SaveFile(fileName, content))
@@ -82,7 +96,7 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "")
     {
-        m_window->ErrorLog("Please give a file name");
+        m_window->ErrorLog("Please give a filename");
         return;
     }
     else
@@ -91,11 +105,21 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
         if(content != "")
         {
             m_window->Log("Open File Succeful");
-            m_window->SetCurrentBuffer(content);
+            m_window->SetCurrentBuffer(parsedCommand[0], content);
         }
         else
             m_window->ErrorLog("Open File Failed");
     }
+}
+
+void CommandHandler::NewClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "File")
+    {
+        m_window->SetCurrentBuffer("new", "");
+    }
+    else
+        m_window->ErrorLog(CMD_NOT_FOUND);
 }
 
 void CommandHandler::ClearClass(std::string* parsedCommand)
@@ -103,5 +127,15 @@ void CommandHandler::ClearClass(std::string* parsedCommand)
     if(parsedCommand[0] == "Status")
         m_window->Log("");
     else
-        m_window->ErrorLog("SaveFailed");
+        m_window->ErrorLog(CMD_NOT_FOUND);
+}
+
+void CommandHandler::CloseClass(std::string* parsedCommand)
+{
+    if(parsedCommand[0] == "File")
+    {
+        m_window->GetNotebook()->RemoveCurrentPage();
+    }
+    else
+        m_window->ErrorLog(CMD_NOT_FOUND);
 }

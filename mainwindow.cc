@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "scrollabletext.h"
+#include "closabletab.h"
 #include <iostream>
 
 #define MAX_LOG_SIZE 40
@@ -7,8 +9,6 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_buttonRun(" Run "),
-                            m_buttonBuffer1("Tab 1"),
-                            m_buttonBuffer2("Tab 2"),
                             m_cmdHandler(this)
 {
     set_title("Editor");
@@ -19,11 +19,9 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
 
     AddCommandLine();
     AddTabs();
-    AddTextView();
     AddStatusBar();
 
-    FillBuffers();
-    OnButtonBuffer1();
+    StartUpTab();
 
     show_all_children();
 }
@@ -53,30 +51,12 @@ void MainWindow::AddCommandLine()
 void MainWindow::AddTabs()
 {
     //Add buttons:
-    m_vBox.pack_start(m_buttonBox, Gtk::PACK_SHRINK);
-
-    m_buttonBox.pack_start(m_buttonBuffer1, Gtk::PACK_SHRINK);
-    m_buttonBox.pack_start(m_buttonBuffer2, Gtk::PACK_SHRINK);
-    //m_buttonBox.set_border_width(5);
-    m_buttonBox.set_layout(Gtk::BUTTONBOX_START);
-
-    //Connect signals:
-    m_buttonBuffer1.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer1) );
-    m_buttonBuffer2.signal_clicked().connect(sigc::mem_fun(*this,
-              &MainWindow::OnButtonBuffer2) );
+    m_vBox.pack_start(m_notebook);
 }
 
-void MainWindow::AddTextView()
+void MainWindow::StartUpTab()
 {
-    //Add the TreeView, inside a ScrolledWindow, with the button underneath:
-    m_scrolledWindow.add(m_textView);
-
-    //Only show the scrollbars when they are necessary:
-    m_scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-
-    m_vBox.pack_start(m_scrolledWindow);
-
+    m_notebook.AddNewTab();
 }
 
 void MainWindow::AddStatusBar()
@@ -86,39 +66,23 @@ void MainWindow::AddStatusBar()
     m_statusBox.pack_start(m_outputLog, Gtk::PACK_SHRINK);
 }
 
-void MainWindow::FillBuffers()
-{
-    m_refTextBuffer1 = Gtk::TextBuffer::create();
-    m_refTextBuffer1->set_text("");
-
-    m_refTextBuffer2 = Gtk::TextBuffer::create();
-    m_refTextBuffer2->set_text("");
-}
-
 MainWindow::~MainWindow()
 {
-}
 
-void MainWindow::OnButtonBuffer1()
-{
-    m_textView.set_buffer(m_refTextBuffer1);
 }
-
-void MainWindow::OnButtonBuffer2()
-{
-    m_textView.set_buffer(m_refTextBuffer2);
-}
-
 
 void MainWindow::OnButtonRun()
 {
-
+    std::cout << GetCurrentFileName() << std::endl;
 }
 
 /* You can do more complex matching with a handler like this.
- * For instance, you could check for substrings inside the string instead of the start,
- * or you could look for the key in extra model columns as well as the model column that will be displayed.
- * The code here is not actually more complex - it's a reimplementation of the default behaviour.
+ * For instance, you could check for substrings inside the string
+ * instead of the start,
+ * or you could look for the key in extra model columns
+ * as well as the model column that will be displayed.
+ * The code here is not actually more complex - it's a reimplementation
+ * of the default behaviour.
  *
 bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
         Gtk::TreeModel::const_iterator& iter)
@@ -145,11 +109,13 @@ bool ExampleWindow::on_completion_match(const Glib::ustring& key, const
 void MainWindow::AddCompletionSet()
 {
     //Add an EntryCompletion:
-    Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
+    Glib::RefPtr<Gtk::EntryCompletion> completion
+                            = Gtk::EntryCompletion::create();
     m_entry.set_completion(completion);
 
     //Create and fill the completion's filter model
-    Glib::RefPtr<Gtk::ListStore> refCompletionModel = Gtk::ListStore::create(m_Columns);
+    Glib::RefPtr<Gtk::ListStore> refCompletionModel
+                            = Gtk::ListStore::create(m_Columns);
     completion->set_model(refCompletionModel);
 
     // For more complex comparisons, use a filter match callback, like this.
@@ -172,7 +138,7 @@ void MainWindow::AddCompletionSet()
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 4;
-    row[m_Columns.m_col_name] = "New";
+    row[m_Columns.m_col_name] = "New File";
 
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 5;
@@ -181,6 +147,10 @@ void MainWindow::AddCompletionSet()
     row = *(refCompletionModel->append());
     row[m_Columns.m_col_id] = 6;
     row[m_Columns.m_col_name] = "Open ";
+
+    row = *(refCompletionModel->append());
+    row[m_Columns.m_col_id] = 7;
+    row[m_Columns.m_col_name] = "Close File";
 
     //Tell the completion what model column to use to
     //- look for a match (when we use the default matching, instead of
@@ -250,24 +220,18 @@ void MainWindow::ErrorLog(const char* message)
 
 
 //Interface
-void MainWindow::SetCurrentBuffer(std::string content)
+void MainWindow::SetCurrentBuffer(  const std::string& filename,
+                                    const std::string& content)
 {
-    const Glib::ustring tempString(content);
-    Glib::RefPtr<Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
-
-    currentBuffer->set_text(tempString);
+    m_notebook.SetCurrentBuffer(filename, content);
 }
 
 std::string MainWindow::GetCurrentBuffer() const
 {
-    Glib::RefPtr<const Gtk::TextBuffer> currentBuffer = m_textView.get_buffer();
-    const Glib::ustring tempString = currentBuffer->get_text();
-
-    return Glib::locale_from_utf8(tempString);
+    return m_notebook.GetCurrentBuffer();
 }
 
 std::string MainWindow::GetCurrentFileName() const
 {
-    std::string name = "test.txt";
-    return name;
+    return m_notebook.GetCurrentFileName();
 }

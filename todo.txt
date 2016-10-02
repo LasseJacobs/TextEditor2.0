@@ -1,15 +1,21 @@
 -Command line
 	*giving run button a function
+	*Changing the run button color
 
 -Status bar
 	*cursor position
 	*line numbers
 
--Tabs
-	*Highlight active tab
-	*making tabs at runtime
-
 -Commands
-	*New
+	*change New to New <filename>
+	*Close All
+
+-Command bar
 	*optimizing open command
 	*cleaning the code a little
+	*removing the tabs background
+
+CLEANING THE CODE
+
+-Creating new notebook to handle memory
+	*and giving this some of the responsibility of the main window
