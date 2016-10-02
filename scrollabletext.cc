@@ -5,14 +5,8 @@ ScrollableText::ScrollableText()
 {
     Gsv::init();
 
-    Glib::RefPtr<Gsv::LanguageManager> language_manager
-                                        = Gsv::LanguageManager::get_default();
-    //TODO: make this an option to choose syntax highlighting
-    Glib::RefPtr<Gsv::Language> language = language_manager->get_language("c");
-
-    Glib::RefPtr<Gsv::Buffer> buffer = Gsv::Buffer::create(language);
-    buffer->set_text("");
-    m_textView.set_source_buffer(buffer);
+    //TODO this needs some work
+    SetBufferText("main.c", "");
 
     m_scrollWindow.add(m_textView);
 
@@ -22,6 +16,31 @@ ScrollableText::ScrollableText()
     pack_start(m_scrollWindow);
 }
 
+
+//New interface
+void ScrollableText::SetBufferText( const std::string& filename,
+                                    const std::string& content)
+{
+    Glib::RefPtr<Gsv::LanguageManager> language_manager
+                                        = Gsv::LanguageManager::get_default();
+
+    Glib::RefPtr<Gsv::Language> language =
+                            language_manager->guess_language(filename, "");
+
+    Glib::RefPtr<Gsv::Buffer> buffer = Gsv::Buffer::create(language);
+    buffer->set_text(content);
+    m_textView.set_source_buffer(buffer);
+}
+
+std::string ScrollableText::GetBufferText() const
+{
+    Glib::ustring tempString = m_textView.get_source_buffer()->get_text();
+
+    return Glib::locale_from_utf8(tempString);
+}
+
+
+//TODO old interface
 Glib::RefPtr<const Gsv::Buffer> ScrollableText::get_buffer() const
 {
     return m_textView.get_source_buffer();

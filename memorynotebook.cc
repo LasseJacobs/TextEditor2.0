@@ -13,6 +13,14 @@ MemoryNotebook::~MemoryNotebook()
     }
 }
 
+void MemoryNotebook::OpenNewTab(const char* filename)
+{
+    AddNewTab(filename);
+    int latestPage = get_n_pages() - 1;
+    set_current_page(latestPage);
+
+    show_all();
+}
 
 void MemoryNotebook::AddNewTab(const char* filename)
 {
@@ -28,15 +36,6 @@ void MemoryNotebook::AddNewTab(const char* filename)
     show_all();
 }
 
-void MemoryNotebook::OpenNewTab(const char* filename)
-{
-    AddNewTab(filename);
-    int latestPage = get_n_pages() - 1;
-    set_current_page(latestPage);
-
-    show_all();
-}
-
 
 //Interface
 void MemoryNotebook::SetCurrentBuffer(  const std::string& filename,
@@ -47,20 +46,14 @@ void MemoryNotebook::SetCurrentBuffer(  const std::string& filename,
     //Setting the buffer
     Glib::ustring tempString(content);
     int currentPage = get_current_page();
-    Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = m_pageData[currentPage].scrollText->get_buffer();
-
-    currentBuffer->set_text(tempString);
+    m_pageData[currentPage].scrollText->SetBufferText(filename, content);
 }
 
 std::string MemoryNotebook::GetCurrentBuffer() const
 {
     int currentPage = get_current_page();
-    const Glib::RefPtr<Gtk::TextBuffer> currentBuffer
-                = m_pageData[currentPage].scrollText->get_buffer();
-    Glib::ustring tempString = currentBuffer->get_text();
 
-    return Glib::locale_from_utf8(tempString);
+    return m_pageData[currentPage].scrollText->GetBufferText();
 }
 
 std::string MemoryNotebook::GetCurrentFileName() const
