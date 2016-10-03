@@ -26,3 +26,15 @@ CLEANING THE CODE
 
 
 buffer->set_text(Glib::get_file_contents(file_path));
+
+
+ANNOTIATION
+
+*command syntax: 
+ ex.:
+	close-tab  1
+        |___| |_| |_|
+ 	 a     b   c
+a) Main command (Class)
+b) Sub command (could be part of 'a' or separate Class)
+c) Argument given to command (a b)
