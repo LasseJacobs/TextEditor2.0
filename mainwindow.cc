@@ -5,6 +5,8 @@
 
 #define MAX_LOG_SIZE 40
 
+MainWindow* MainWindow::m_instance = NULL;
+
 MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
                             m_hBox(Gtk::ORIENTATION_HORIZONTAL),
                             m_statusBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -24,6 +26,14 @@ MainWindow::MainWindow() :  m_vBox(Gtk::ORIENTATION_VERTICAL),
     StartUpTab();
 
     show_all_children();
+}
+
+MainWindow* MainWindow::Instance()
+{
+    if(m_instance == NULL)
+        m_instance = new MainWindow();
+
+    return m_instance;
 }
 
 void MainWindow::AddCommandLine()

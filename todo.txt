@@ -1,10 +1,8 @@
 -Command line
 	*giving run button a function
-	*Changing the run button color
 
 -Status bar
-	*cursor position
-	*line numbers
+	*project language
 
 -Commands
 	*change New to New <filename>
@@ -13,12 +11,17 @@
 -Command bar
 	*optimizing open command
 	*cleaning the code a little
-	*removing the tabs background
 
 CLEANING THE CODE
 
--Creating new notebook to handle memory
-	*and giving this some of the responsibility of the main window
+-make mainwindow a singleton
+-change commandhandler
+
+
+#REQUIREMENTS new commandhandler
+-one place to add new cmds
+-abstracted from the view code (for reuse)
+-commands need to be callable from non commandhandler places (so they must be separate objects)
 
 
 buffer->set_text(Glib::get_file_contents(file_path));

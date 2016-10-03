@@ -10,6 +10,7 @@ class MainWindow : public Gtk::Window
 {
 public:
     MainWindow();
+    static MainWindow* Instance();
     virtual ~MainWindow();
 
     //Interface
@@ -50,7 +51,6 @@ protected:
     };
 
     ModelColumns m_Columns;
-    static int m_autoCompleteCount;
 
     typedef std::map<int, Glib::ustring> type_actions_map;
     type_actions_map m_CompletionActions;
@@ -71,6 +71,9 @@ protected:
     //Status
     Gtk::Label m_outputLog;
     CommandHandler m_cmdHandler;
+
+    //Singleton
+    static MainWindow* m_instance;
 };
 
 #endif //GTKMM_WINDOW_H
