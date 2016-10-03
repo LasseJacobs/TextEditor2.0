@@ -19,3 +19,6 @@ CLEANING THE CODE
 
 -Creating new notebook to handle memory
 	*and giving this some of the responsibility of the main window
+
+
+buffer->set_text(Glib::get_file_contents(file_path));

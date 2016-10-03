@@ -28,6 +28,7 @@ void MemoryNotebook::AddNewTab(const char* filename)
     ClosableTab* closableTab = new ClosableTab(filename, this);
 
     append_page( *scrollText, *closableTab);
+    set_tab_reorderable(*scrollText);
 
     //push the data to pages stack
     page_mem tempMem = { scrollText, closableTab};

@@ -8,6 +8,7 @@ ScrollableText::ScrollableText()
     //TODO this needs some work
     SetBufferText("main.c", "");
 
+    m_textView.set_show_line_numbers(true);
     m_scrollWindow.add(m_textView);
 
     //Only show the scrollbars when they are necessary:
