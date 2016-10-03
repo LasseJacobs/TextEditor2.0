@@ -22,6 +22,7 @@ CLEANING THE CODE
 -one place to add new cmds
 -abstracted from the view code (for reuse)
 -commands need to be callable from non commandhandler places (so they must be separate objects)
+-defining a language for the commandhandler to use
 
 
 buffer->set_text(Glib::get_file_contents(file_path));
