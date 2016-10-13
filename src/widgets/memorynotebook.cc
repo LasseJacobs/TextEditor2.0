@@ -13,18 +13,20 @@ MemoryNotebook::~MemoryNotebook()
     }
 }
 
-void MemoryNotebook::OpenNewTab(const std::string& filename)
+void MemoryNotebook::OpenNewTab(const std::string& filename,
+                                const std::string& content)
 {
-    AddNewTab(filename);
+    AddNewTab(filename, content);
     int latestPage = get_n_pages() - 1;
     set_current_page(latestPage);
 
     show_all();
 }
 
-int MemoryNotebook::AddNewTab(const std::string& filename)
+int MemoryNotebook::AddNewTab(  const std::string& filename,
+                                const std::string& content)
 {
-    ScrollableText* scrollText = new ScrollableText;
+    ScrollableText* scrollText = new ScrollableText(filename, content);
     ClosableTab* closableTab = new ClosableTab(filename, this);
 
     append_page( *scrollText, *closableTab);
@@ -45,8 +47,6 @@ int MemoryNotebook::AddNewTab(const std::string& filename)
 void MemoryNotebook::SetCurrentBuffer(  const std::string& filename,
                                         const std::string& content)
 {
-    //Creating a new tab
-    OpenNewTab(filename);
     //Setting the buffer
     Glib::ustring tempString(content);
     int currentPage = get_current_page();

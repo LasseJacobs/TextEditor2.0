@@ -1,12 +1,13 @@
 
 #include "scrollabletext.h"
 
-ScrollableText::ScrollableText()
+
+ScrollableText::ScrollableText( const std::string& filename,
+                                const std::string& content)
 {
     Gsv::init();
 
-    //TODO this needs some work
-    SetBufferText("main.c", "");
+    SetBufferText("main.c", content);
 
     m_textView.set_show_line_numbers(true);
     m_scrollWindow.add(m_textView);
@@ -38,16 +39,4 @@ std::string ScrollableText::GetBufferText() const
     Glib::ustring tempString = m_textView.get_source_buffer()->get_text();
 
     return Glib::locale_from_utf8(tempString);
-}
-
-
-//TODO old interface
-Glib::RefPtr<const Gsv::Buffer> ScrollableText::get_buffer() const
-{
-    return m_textView.get_source_buffer();
-}
-
-Glib::RefPtr<Gsv::Buffer> ScrollableText::get_buffer()
-{
-    return m_textView.get_source_buffer();
 }

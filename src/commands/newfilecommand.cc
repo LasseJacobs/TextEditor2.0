@@ -2,7 +2,8 @@
 #include "newfilecommand.h"
 #include "mainwindow.h"
 
-NewFileCommand::NewFileCommand(const std::string& filename)
+NewFileCommand::NewFileCommand( const std::string& filename,
+                                const std::string& content)
 {
     m_filename = filename;
 }

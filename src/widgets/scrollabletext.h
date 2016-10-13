@@ -8,9 +8,11 @@
 class ScrollableText : public Gtk::Box
 {
 public:
-    ScrollableText();
+    ScrollableText(const std::string& filename = "main.c",
+                            const std::string& content = "");
 
-    void SetBufferText(const std::string& filename, const std::string& content = "");
+    void SetBufferText(const std::string& filename,
+                            const std::string& content = "");
     std::string GetBufferText() const;
 
     Glib::RefPtr<const Gsv::Buffer> get_buffer() const;

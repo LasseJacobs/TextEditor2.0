@@ -11,14 +11,15 @@ public:
     ~MemoryNotebook();
 
     //Interface
-    void SetCurrentBuffer(const std::string& filename, const std::string& content);
+    void SetCurrentBuffer(const std::string& filename,
+                                const std::string& content);
     std::string GetNtBuffer(int n) const;
     std::string GetCurrentBuffer() const;
     std::string GetNtFileName(int n) const;
     std::string GetCurrentFileName() const;
 
-    void OpenNewTab(const std::string& filename = "new");
-    int AddNewTab(const std::string& filename = "new");
+    void OpenNewTab(const std::string& filename, const std::string& content = "");
+    int AddNewTab(const std::string& filename, const std::string& content = "");
 
     void RemoveCurrentPage();
     void RemovePage(int pagenum);

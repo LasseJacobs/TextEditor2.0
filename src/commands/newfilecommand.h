@@ -6,7 +6,7 @@
 
 class NewFileCommand : public Command {
 public:
-    NewFileCommand(const std::string& filename);
+    NewFileCommand(const std::string& filename, const std::string& content = "");
 
     void Execute();
     void Undo();
