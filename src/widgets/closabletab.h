@@ -7,7 +7,7 @@
 class ClosableTab : public Gtk::Box
 {
 public:
-    ClosableTab(const char* name, MemoryNotebook* parent);
+    ClosableTab(const std::string& name, MemoryNotebook* parent);
 
     const Glib::ustring get_tab_label_text() const;
 protected:
@@ -17,7 +17,7 @@ protected:
 
     bool m_active;
 
-    void CreateUI(const char* name);
+    void CreateUI(const std::string& name);
     void OnButtonClicked();
 };
 

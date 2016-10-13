@@ -13,7 +13,7 @@ MemoryNotebook::~MemoryNotebook()
     }
 }
 
-void MemoryNotebook::OpenNewTab(const char* filename)
+void MemoryNotebook::OpenNewTab(const std::string& filename)
 {
     AddNewTab(filename);
     int latestPage = get_n_pages() - 1;
@@ -22,7 +22,7 @@ void MemoryNotebook::OpenNewTab(const char* filename)
     show_all();
 }
 
-void MemoryNotebook::AddNewTab(const char* filename)
+int MemoryNotebook::AddNewTab(const std::string& filename)
 {
     ScrollableText* scrollText = new ScrollableText;
     ClosableTab* closableTab = new ClosableTab(filename, this);
@@ -35,6 +35,9 @@ void MemoryNotebook::AddNewTab(const char* filename)
     m_pageData.push_back(tempMem);
 
     show_all();
+
+    //TODO do we really need this??
+    return page_num(*closableTab);
 }
 
 
@@ -43,7 +46,7 @@ void MemoryNotebook::SetCurrentBuffer(  const std::string& filename,
                                         const std::string& content)
 {
     //Creating a new tab
-    OpenNewTab(filename.c_str());
+    OpenNewTab(filename);
     //Setting the buffer
     Glib::ustring tempString(content);
     int currentPage = get_current_page();
@@ -57,11 +60,24 @@ std::string MemoryNotebook::GetCurrentBuffer() const
     return m_pageData[currentPage].scrollText->GetBufferText();
 }
 
+std::string MemoryNotebook::GetNtBuffer(int n) const
+{
+    return m_pageData[n].scrollText->GetBufferText();
+}
+
 std::string MemoryNotebook::GetCurrentFileName() const
 {
     int currentPage = get_current_page();
     const Glib::ustring filename
                 = m_pageData[currentPage].closableTab->get_tab_label_text();
+
+    return Glib::locale_from_utf8(filename);
+}
+
+std::string MemoryNotebook::GetNtFileName(int n) const
+{
+    const Glib::ustring filename
+                = m_pageData[n].closableTab->get_tab_label_text();
 
     return Glib::locale_from_utf8(filename);
 }
@@ -72,6 +88,7 @@ void MemoryNotebook::RemoveCurrentPage()
     RemovePage(p_index);
 }
 
+//TODO virtual to parent if possible??
 void MemoryNotebook::RemovePage(int pagenum)
 {
     remove_page(pagenum);
@@ -82,6 +99,8 @@ void MemoryNotebook::RemovePage(int pagenum)
     m_pageData.erase(m_pageData.begin() + pagenum);
 }
 
+
+/*
 int MemoryNotebook::PageNumber(ClosableTab* tab)
 {
     for(unsigned int i = 0; i < m_pageData.size(); i++)
@@ -91,3 +110,4 @@ int MemoryNotebook::PageNumber(ClosableTab* tab)
     }
     return -1;
 }
+*/

@@ -44,5 +44,5 @@ memorynotebook.o: $(SRC_WDGT)/memorynotebook.cc
 	$(CC) $(CFLAGS) $(SRC_WDGT)/memorynotebook.cc
 
 clean:
-	rm -rf *o $(PNAME)
+	rm -rf *o $(BIN)/$(PNAME)
 	echo 'clean done..'

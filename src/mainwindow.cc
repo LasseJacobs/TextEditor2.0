@@ -68,7 +68,7 @@ void MainWindow::AddTabs()
 
 void MainWindow::StartUpTab()
 {
-    m_notebook.AddNewTab();
+
 }
 
 void MainWindow::AddStatusBar()

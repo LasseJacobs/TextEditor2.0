@@ -27,10 +27,13 @@ CLEANING THE CODE
 
 buffer->set_text(Glib::get_file_contents(file_path));
 
+Interface
+	-Notebook OpenNewTab add return int of page num
+
 
 ANNOTIATION
 
-*command syntax: 
+*command syntax:
  ex.:
 	close-tab  1
         |___| |_| |_|

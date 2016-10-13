@@ -2,7 +2,7 @@
 #include "closabletab.h"
 
 
-ClosableTab::ClosableTab(const char* name, MemoryNotebook* parent)
+ClosableTab::ClosableTab(const std::string& name, MemoryNotebook* parent)
         : Gtk::Box(Gtk::ORIENTATION_HORIZONTAL)
 {
     m_parent = parent;
@@ -14,7 +14,7 @@ const Glib::ustring ClosableTab::get_tab_label_text() const
     return m_caption.get_text();
 }
 
-void ClosableTab::CreateUI(const char* name)
+void ClosableTab::CreateUI(const std::string& name)
 {
     m_caption.set_label(name);
 
@@ -29,6 +29,7 @@ void ClosableTab::CreateUI(const char* name)
 
 void ClosableTab::OnButtonClicked()
 {
-    int pageNumber = m_parent->PageNumber(this);
+    //TODO test this might need to good to PageNumber
+    int pageNumber = m_parent->page_num(*this);
     m_parent->RemovePage(pageNumber);
 }
