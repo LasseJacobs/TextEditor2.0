@@ -14,9 +14,6 @@ public:
     void SetBufferText(const std::string& filename,
                             const std::string& content = "");
     std::string GetBufferText() const;
-
-    Glib::RefPtr<const Gsv::Buffer> get_buffer() const;
-    Glib::RefPtr<Gsv::Buffer> get_buffer();
 protected:
     Gtk::ScrolledWindow m_scrollWindow;
     Gsv::View m_textView;

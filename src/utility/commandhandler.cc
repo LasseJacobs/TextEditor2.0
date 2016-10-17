@@ -105,7 +105,7 @@ void CommandHandler::OpenClass(std::string* parsedCommand)
         if(content != "")
         {
             m_window->Log("Open File Succeful");
-            m_window->SetCurrentBuffer(parsedCommand[0], content);
+            m_window->GetNotebook()->OpenNewTab(parsedCommand[0], content);
         }
         else
             m_window->ErrorLog("Open File Failed");
@@ -116,7 +116,7 @@ void CommandHandler::NewClass(std::string* parsedCommand)
 {
     if(parsedCommand[0] == "File")
     {
-        m_window->SetCurrentBuffer("new", "");
+        m_window->GetNotebook()->OpenNewTab("new", "");
     }
     else
         m_window->ErrorLog(CMD_NOT_FOUND);
